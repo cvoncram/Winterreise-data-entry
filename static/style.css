@@ -1,21 +1,74 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     padding: 0;
     margin: 0;
+    background-color: #ececec;
+    color: #142d4c;
 }
 
 .topnav {
-    background: #222;
+    background: #385170;
     padding: 12px;
+    text-align: center;
 }
 
 .topnav a {
-    color: #fff;
-    margin-right: 15px;
+    color: #ececec;
+    margin-right: 25px;
     text-decoration: none;
+}
+
+.topnav a:hover {
+    background-color: #142d4c;
+    border-radius: 6px;
 }
 
 .content {
     padding: 20px;
+    text-align: left;
+    margin-left: 25%;
+    margin-right: 25%;
+
 }
 
+.file-input-hidden {
+    display: none;
+}
+
+.custom-file-button {
+    background-color: #9fd3c7;
+    color: #385170;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-block;
+}
+.custom-file-button:hover {
+    background-color: #142d4c;
+    color: #ececec;
+}
+
+button,
+input,
+select {
+    background-color: #9fd3c7;
+    color: #385170;
+    border-radius: 8px;
+    padding: 8px 16px;
+    border: none;
+    font-size: 16px;
+    border-color: #142d4c;
+    border: width 0.2em;
+}
+
+.form-row {
+    margin-bottom: 20px;
+}
+
+.checkbox-label {
+    cursor: pointer;
+}
+
+.custom-select {
+    min-width: 120px;
+}

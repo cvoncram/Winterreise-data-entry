@@ -4,12 +4,14 @@
 <h2>Align Plugin Data</h2>
 
 <form action="/align" method="post" enctype="multipart/form-data">
-    <label>Base CSV (with measure.beat + time):</label>
-    <input type="file" name="base"><br><br>
 
-    <label>Plugin CSV:</label>
-    <input type="file" name="plugin"><br><br>
+    {{ file_input("file", "base", "Browse Base CSV (with measure.beat + time)")}} 
+    <br>
+    
+    {{ file_input("plugin-file", "plugin", "Browse Plugin CSV") }}
+    <br>
 
+    
     <label>Plugin Type:</label>
     <select name="plugin_type">
         <option value="powercurve">PowerCurve</option>

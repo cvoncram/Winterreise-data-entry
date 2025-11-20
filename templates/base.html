@@ -1,4 +1,56 @@
 <!DOCTYPE html>
+
+{# ======================== #}
+{#   Upload Macro           #}
+{# ======================== #}
+{% macro file_input(id, name, label_text="Choose File") %}
+<div class="file-wrapper">
+    <label for="{{ id }}" class="custom-file-button">{{ label_text }}</label>
+    <span id="{{ id }}-name">No file chosen</span>
+    <input type="file"
+           id="{{ id }}"
+           name="{{ name }}"
+           class="file-input-hidden"
+           onchange="document.getElementById('{{ id }}-name').textContent =
+                     this.files[0] ? this.files[0].name : 'No file chosen'">
+</div>
+{% endmacro %}
+
+{# ======================== #}
+{#   Dropdown Macro         #}
+{# ======================== #}
+{% macro dropdown(name, label_text, options, selected=None) %}
+<div class="form-row">
+    <label for="{{ name }}">{{ label_text }}:</label>
+    <select name="{{ name }}" id="{{ name }}" class="custom-select">
+        {% for value, text in options %}
+            <option value="{{ value }}"
+                    {% if selected is not none and selected == value %}selected{% endif %}>
+                {{ text }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+{% endmacro %}
+
+
+{# ======================== #}
+{#   Checkbox Macro         #}
+{# ======================== #}
+{% macro checkbox(name, label_text, checked=False, value="1") %}
+<div class="form-row">
+    <label class="checkbox-label">
+        <input type="checkbox"
+               name="{{ name }}"
+               value="{{ value }}"
+               {% if checked %}checked{% endif %}>
+        {{ label_text }}
+    </label>
+</div>
+{% endmacro %}
+
+
+
 <html>
 <head>
     <title>{{ title }}</title>
@@ -9,8 +61,8 @@
 <nav class="topnav">
     <a href="/">Home</a>
     <a href="/correct">Correct Beats & Tempo</a>
-    <a href="/align">Align Plugin Data</a>
-    <a href="/insert-mei">Insert CSV → MEI</a>
+    <a href="/align">Align & Map Plugin Data</a>
+    <a href="/insert-mei">Insert CSV in MEI/XML</a>
 </nav>
 
 <div class="content">
