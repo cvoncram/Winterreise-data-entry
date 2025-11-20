@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<nav class="topnav">
+    <a href="/">Home</a>
+    <a href="/correct">Correct Beats & Tempo</a>
+    <a href="/align">Align Plugin Data</a>
+    <a href="/insert-mei">Insert CSV → MEI</a>
+</nav>
+
+<div class="content">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>
+

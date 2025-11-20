@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Align Plugin Data</h2>
+
+<form action="/align" method="post" enctype="multipart/form-data">
+    <label>Base CSV (with measure.beat + time):</label>
+    <input type="file" name="base"><br><br>
+
+    <label>Plugin CSV:</label>
+    <input type="file" name="plugin"><br><br>
+
+    <label>Plugin Type:</label>
+    <select name="plugin_type">
+        <option value="powercurve">PowerCurve</option>
+        <option value="centroid">Spectral Centroid</option>
+    </select><br><br>
+
+    <label>Aggregation (centroid only):</label>
+    <select name="agg">
+        <option value="mean">mean</option>
+        <option value="max">max</option>
+        <option value="min">min</option>
+    </select><br><br>
+
+    <label>Filename:</label>
+    <input type="text" name="filename" value="combined.csv"><br><br>
+
+    <button type="submit">Process</button>
+</form>
+
+{% if result_ready %}
+<h3>Download combined CSV:</h3>
+<a href="/align/download/{{ token }}">Click here to download</a>
+{% endif %}
+
+{% endblock %}
+

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Insert CSV into MEI</h2>
+
+<form action="/insert-mei" method="post" enctype="multipart/form-data">
+    <label>Upload MEI:</label>
+    <input type="file" name="mei"><br><br>
+
+    <label>Upload CSV:</label>
+    <input type="file" name="csv"><br><br>
+
+    <label>CSV column → tempo (mm):</label>
+    <input type="text" name="tempo"><br><br>
+
+    <label>CSV column → dynam (n):</label>
+    <input type="text" name="dynam"><br><br>
+
+    <label>CSV column → annot (n):</label>
+    <input type="text" name="annot"><br><br>
+
+    <label>Annot label (optional):</label>
+    <input type="text" name="annot_label"><br><br>
+
+    <label>Filename:</label>
+    <input type="text" name="filename" value="modified.mei"><br><br>
+
+    <button type="submit">Process</button>
+</form>
+
+{% if result_ready %}
+<h3>Download modified MEI:</h3>
+<a href="/insert-mei/download/{{ token }}">Click here to download</a>
+{% endif %}
+
+{% endblock %}
+

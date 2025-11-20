@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Correct Beats and Tempo</h2>
+
+<form action="/correct" method="post" enctype="multipart/form-data">
+    <label>Upload CSV:</label>
+    <input type="file" name="file"><br><br>
+
+    <label>Beats per Measure:</label>
+    <select name="bpm">
+        {% for i in range(1,13) %}
+        <option value="{{ i }}" {% if i == 3 %}selected{% endif %}>{{ i }}</option>
+        {% endfor %}
+    </select>
+    <br><br>
+
+    <label>Pickup/anacrusis?</label>
+    <input type="checkbox" name="has_anacrusis" value="1">
+    <br><br>
+
+    <label>Anacrusis length (beats, decimal ok):</label>
+    <input type="text" name="anacrusis" value="0.0"><br><br>
+
+    <label>Filename for download:</label>
+    <input type="text" name="filename" value="corrected.csv"><br><br>
+
+    <button type="submit">Process</button>
+</form>
+
+{% if result_ready %}
+<h3>Download corrected CSV:</h3>
+<a href="/correct/download/{{ token }}">Click here to download</a>
+{% endif %}
+
+{% endblock %}
+
