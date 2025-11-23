@@ -4,26 +4,20 @@
 <h2>Insert CSV into MEI</h2>
 
 <form action="/insert-mei" method="post" enctype="multipart/form-data">
-    <label>Upload MEI:</label>
-    <input type="file" name="mei"><br><br>
 
-    <label>Upload CSV:</label>
-    <input type="file" name="csv"><br><br>
+    {{ file_input("mei_file", "mei", "Upload MEI") }}
 
-    <label>CSV column → tempo (mm):</label>
-    <input type="text" name="tempo"><br><br>
+    {{ file_input("csv_file", "csv", "Upload CSV") }}
 
-    <label>CSV column → dynam (n):</label>
-    <input type="text" name="dynam"><br><br>
+    {{ text_input("tempo", "tempo", "CSV column → tempo (mm)") }}
 
-    <label>CSV column → annot (n):</label>
-    <input type="text" name="annot"><br><br>
+    {{ text_input("dynam", "dynam", "CSV column → dynam (n)") }}
 
-    <label>Annot label (optional):</label>
-    <input type="text" name="annot_label"><br><br>
+    {{ text_input("annot", "annot", "CSV column → annot (n)") }}
 
-    <label>Filename:</label>
-    <input type="text" name="filename" value="modified.mei"><br><br>
+    {{ text_input("annot_label", "annot_label", "Annot label (optional)") }}
+
+    {{ text_input("filename", "filename", "Filename", "modified.mei") }}
 
     <button type="submit">Process</button>
 </form>
@@ -34,4 +28,3 @@
 {% endif %}
 
 {% endblock %}
-

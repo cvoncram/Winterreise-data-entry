@@ -1,63 +1,104 @@
 <!DOCTYPE html>
-
-{# ======================== #}
-{#   Upload Macro           #}
-{# ======================== #}
-{% macro file_input(id, name, label_text="Choose File") %}
-<div class="file-wrapper">
-    <label for="{{ id }}" class="custom-file-button">{{ label_text }}</label>
-    <span id="{{ id }}-name">No file chosen</span>
-    <input type="file"
-           id="{{ id }}"
-           name="{{ name }}"
-           class="file-input-hidden"
-           onchange="document.getElementById('{{ id }}-name').textContent =
-                     this.files[0] ? this.files[0].name : 'No file chosen'">
-</div>
-{% endmacro %}
-
-{# ======================== #}
-{#   Dropdown Macro         #}
-{# ======================== #}
-{% macro dropdown(name, label_text, options, selected=None) %}
-<div class="form-row">
-    <label for="{{ name }}">{{ label_text }}:</label>
-    <select name="{{ name }}" id="{{ name }}" class="custom-select">
-        {% for value, text in options %}
-            <option value="{{ value }}"
-                    {% if selected is not none and selected == value %}selected{% endif %}>
-                {{ text }}
-            </option>
-        {% endfor %}
-    </select>
-</div>
-{% endmacro %}
-
-
-{# ======================== #}
-{#   Checkbox Macro         #}
-{# ======================== #}
-{% macro checkbox(name, label_text, checked=False, value="1") %}
-<div class="form-row">
-    <label class="checkbox-label">
-        <input type="checkbox"
-               name="{{ name }}"
-               value="{{ value }}"
-               {% if checked %}checked{% endif %}>
-        {{ label_text }}
-    </label>
-</div>
-{% endmacro %}
-
-
-
 <html>
 <head>
     <title>{{ title }}</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
+
+<script>
+document.addEventListener("change", function (event) {
+    if (event.target.matches(".file-input-hidden")) {
+        const input = event.target;
+        const nameSpan = document.getElementById(input.id + "-name");
+        if (nameSpan) {
+            nameSpan.textContent = input.files[0]
+                ? input.files[0].name
+                : "No file chosen";
+        }
+    }
+});
+</script>
+
+
 <body>
 
+<!-- ======================== -->
+<!--        TEXT INPUT        -->
+<!-- ======================== -->
+{% macro text_input(id, name, label_text="", value="") %}
+<div class="form-row">
+    {% if label_text %}
+    <label for="{{ id }}">{{ label_text }}</label>
+    {% endif %}
+    <input type="text"
+           id="{{ id }}"
+           name="{{ name }}"
+           value="{{ value }}"
+           class="form-control">
+</div>
+{% endmacro %}
+
+<!-- ======================== -->
+<!--        FILE INPUT        -->
+<!-- ======================== -->
+{% macro file_input(id, name, label_text="Choose File") %}
+<div class="form-row file-wrapper">
+    <label for="{{ id }}" class="custom-file-button">
+        <span>{{ label_text }}</span>
+        <span class="file-name" id="{{ id }}-name">No file chosen</span>
+    </label>
+
+    <input type="file"
+           id="{{ id }}"
+           name="{{ name }}"
+           class="file-input-hidden">
+</div>
+{% endmacro %}
+
+<!-- ======================== -->
+<!--     CUSTOM DROPDOWN      -->
+<!-- ======================== -->
+{% macro custom_dropdown(name, label_text, options, selected=None) %}
+<div class="form-row custom-select-wrapper" id="{{ name }}-wrapper">
+    <label>{{ label_text }}</label>
+
+    <div class="custom-select-display" onclick="toggleSelect('{{ name }}-options')">
+        {{ selected if selected else "Select…" }}
+    </div>
+
+    <input type="hidden" name="{{ name }}" value="{{ selected or ''}}">
+
+    <div class="custom-select-options" id="{{ name }}-options">
+        {% for value, text in options %}
+        <div onclick="chooseOption('{{ name }}-wrapper', '{{ value }}', '{{ text }}')">
+            {{ text }}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endmacro %}
+
+<!-- ======================== -->
+<!--         CHECKBOX         -->
+<!-- ======================== -->
+{% macro toggle(name, label_text, checked=False, value="1") %}
+<div class="toggle-wrapper">
+    <label for="{{ name }}">
+        <input id="{{ name }}"
+               type="checkbox"
+               name="{{ name }}"
+               value="{{ value }}"
+               class="toggle-checkbox"
+               {% if checked %}checked{% endif %}>
+        <span class="toggle-switch"></span>
+        <span class="toggle-label">{{ label_text }}</span>
+    </label>
+</div>
+{% endmacro %}
+
+<!-- ======================== -->
+<!--         NAVBAR           -->
+<!-- ======================== -->
 <nav class="topnav">
     <a href="/">Home</a>
     <a href="/correct">Correct Beats & Tempo</a>
@@ -69,6 +110,36 @@
     {% block content %}{% endblock %}
 </div>
 
+
+<!-- ======================== -->
+<!--  Dropdown JavaScript     -->
+<!-- ======================== -->
+<script>
+document.addEventListener("click", function (event) {
+    const menus = document.querySelectorAll(".custom-select-options");
+    menus.forEach(menu => {
+        const wrapper = menu.closest(".custom-select-wrapper");
+        if (!wrapper.contains(event.target)) {
+            menu.style.display = "none";
+        }
+    });
+});
+
+function toggleSelect(id) {
+    const menu = document.getElementById(id);
+    document.querySelectorAll(".custom-select-options").forEach(m => {
+        if (m !== menu) m.style.display = "none";
+    });
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+function chooseOption(wrapperId, value, text) {
+    const wrapper = document.getElementById(wrapperId);
+    wrapper.querySelector("input").value = value;
+    wrapper.querySelector(".custom-select-display").textContent = text;
+    wrapper.querySelector(".custom-select-options").style.display = "none";
+}
+</script>
+
 </body>
 </html>
-

@@ -1,3 +1,6 @@
+/* -------------------- */
+/*        Body          */
+/* -------------------- */
 body {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     padding: 0;
@@ -6,6 +9,9 @@ body {
     color: #142d4c;
 }
 
+/* -------------------- */
+/*       Top Navigation */
+/* -------------------- */
 .topnav {
     background: #385170;
     padding: 12px;
@@ -23,52 +29,212 @@ body {
     border-radius: 6px;
 }
 
+/* -------------------- */
+/*       Content Area   */
+/* -------------------- */
 .content {
     padding: 20px;
     text-align: left;
     margin-left: 25%;
     margin-right: 25%;
-
 }
 
-.file-input-hidden {
-    display: none;
-}
-
-.custom-file-button {
-    background-color: #9fd3c7;
-    color: #385170;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    display: inline-block;
-}
-.custom-file-button:hover {
-    background-color: #142d4c;
-    color: #ececec;
-}
-
-button,
-input,
-select {
-    background-color: #9fd3c7;
-    color: #385170;
-    border-radius: 8px;
-    padding: 8px 16px;
-    border: none;
-    font-size: 16px;
-    border-color: #142d4c;
-    border: width 0.2em;
-}
-
+/* -------------------- */
+/*   Generic Form Row   */
+/* -------------------- */
 .form-row {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
     margin-bottom: 20px;
 }
 
-.checkbox-label {
+.form-row label {
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #385170 !important;
+}
+
+/* -------------------- */
+/* Shared visual tokens */
+/* -------------------- */
+:root {
+    --bg: #9fd3c7;
+    --fg: #385170;
+    --hover-bg: #142d4c;
+    --hover-fg: #ececec;
+    --page-bg: #ececec;
+    --page-fg: #142d4c;
+    --radius: 8px;
+    --padding: 12px 16px;
+}
+
+/* -------------------- */
+/* Generic full-width form controls */
+/* -------------------- */
+.form-control,
+button,
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+textarea,
+select {
+    width: 100%;
+    padding: var(--padding);
+    border-radius: var(--radius);
+    border: none;
+    font-size: 16px;
+    color: var(--fg);
+    background-color: var(--bg);
+    box-sizing: border-box;
+    transition: background-color 0.18s ease, color 0.18s ease, box-shadow 0.12s;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+input[type="text"],
+textarea {
+    cursor: text;
+}
+
+button:hover,
+.form-control:hover,
+.custom-file-button:hover,
+.custom-select-display:hover {
+    background-color: var(--hover-bg);
+    color: var(--hover-fg);
+}
+
+button:focus,
+input:focus,
+textarea:focus,
+select:focus,
+.form-control:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(56,81,112,0.12);
+}
+
+/* -------------------- */
+/* File input (custom) */
+/* -------------------- */
+.file-input-hidden {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.file-wrapper {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.custom-file-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: var(--padding);
+    border-radius: var(--radius);
+    background-color: var(--bg);
+    color: var(--fg);
+    cursor: pointer;
+    transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.custom-file-button .file-name {
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60%;
+}
+
+/* -------------------- */
+/* Toggle / Checkbox    */
+/* -------------------- */
+.toggle-wrapper {
+    margin-bottom: 20px;
+}
+
+.toggle-wrapper label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     cursor: pointer;
 }
 
-.custom-select {
-    min-width: 120px;
+.toggle-checkbox {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.toggle-switch {
+    width: 46px;
+    height: 24px;
+    background-color: var(--bg);
+    border-radius: 12px;
+    position: relative;
+    transition: background-color 0.18s ease;
+}
+
+.toggle-switch::before {
+    content: "";
+    width: 18px;
+    height: 18px;
+    background-color: var(--page-bg);
+    border-radius: 50%;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.18s ease;
+}
+
+.toggle-checkbox:checked + .toggle-switch {
+    background-color: var(--fg);
+}
+
+.toggle-checkbox:checked + .toggle-switch::before {
+    transform: translateX(22px);
+}
+
+/* -------------------- */
+/* Custom Dropdown      */
+/* -------------------- */
+.custom-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.custom-select-display {
+    padding: var(--padding);
+    border-radius: var(--radius);
+    background-color: var(--bg);
+    color: var(--fg);
+    cursor: pointer;
+}
+
+.custom-select-options {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 8px);
+    background-color: var(--bg);
+    border-radius: var(--radius);
+    display: none;
+    padding: 4px 0;
+    box-shadow: 0 6px 18px rgba(20,45,76,0.08);
+    z-index: 100;
+}
+
+.custom-select-options div {
+    padding: 10px 16px;
+    cursor: pointer;
+}
+
+.custom-select-options div:hover {
+    background-color: var(--hover-bg);
+    color: var(--hover-fg);
 }

@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from io import BytesIO
+from backend.dependencies import read_csv_upload
 
 def find_col_ci(df, name):
     lower = [c.lower() for c in df.columns]
@@ -11,7 +12,7 @@ def find_col_ci(df, name):
 
 def process_csv(content, bpm, anacrusis_value, has_anacrusis, output_path):
 
-    df = pd.read_csv(BytesIO(content))
+    df = read_csv_upload(content)
 
     time_col = find_col_ci(df, "time")
     if time_col is None:

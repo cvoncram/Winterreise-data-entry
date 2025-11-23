@@ -1,6 +1,7 @@
 import pandas as pd
 from lxml import etree
 from io import BytesIO
+from backend.dependencies import read_csv_upload
 
 NS = {"mei": "http://www.music-encoding.org/ns/mei"}
 
@@ -37,7 +38,7 @@ def insert_into_mei(mei_bytes, csv_bytes,
     tree = etree.parse(BytesIO(mei_bytes))
     root = tree.getroot()
 
-    df = pd.read_csv(BytesIO(csv_bytes))
+    df = read_csv_upload(csv_bytes)
 
     mb_col = None
     for c in df.columns:

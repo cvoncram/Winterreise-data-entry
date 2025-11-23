@@ -4,30 +4,32 @@
 <h2>Align Plugin Data</h2>
 
 <form action="/align" method="post" enctype="multipart/form-data">
-
     {{ file_input("file", "base", "Browse Base CSV (with measure.beat + time)")}} 
     <br>
-    
     {{ file_input("plugin-file", "plugin", "Browse Plugin CSV") }}
     <br>
-
-    
-    <label>Plugin Type:</label>
-    <select name="plugin_type">
-        <option value="powercurve">PowerCurve</option>
-        <option value="centroid">Spectral Centroid</option>
-    </select><br><br>
-
-    <label>Aggregation (centroid only):</label>
-    <select name="agg">
-        <option value="mean">mean</option>
-        <option value="max">max</option>
-        <option value="min">min</option>
-    </select><br><br>
-
-    <label>Filename:</label>
-    <input type="text" name="filename" value="combined.csv"><br><br>
-
+    {{ custom_dropdown(
+        "plugin_type",
+        "Plugin Type",
+        [
+            ("powercurve", "PowerCurve"),
+            ("centroid", "Spectral Centroid")
+        ],
+        selected=None
+    ) }}
+    <br>
+    {{ custom_dropdown(
+        "agg",
+        "Aggregation (centroid only)",
+        [
+            ("mean", "mean"),
+            ("max", "max"),
+            ("min", "min")
+        ]
+    ) }}
+    <br>
+    {{ text_input("filename", "filename", "Filename", "combined.csv") }}
+    <br>
     <button type="submit">Process</button>
 </form>
 

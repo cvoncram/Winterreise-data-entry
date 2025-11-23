@@ -4,26 +4,22 @@
 <h2>Correct Beats and Tempo</h2>
 
 <form action="/correct" method="post" enctype="multipart/form-data">
-    <label>Upload CSV:</label>
-    <input type="file" name="file"><br><br>
 
-    <label>Beats per Measure:</label>
-    <select name="bpm">
-        {% for i in range(1,13) %}
-        <option value="{{ i }}" {% if i == 3 %}selected{% endif %}>{{ i }}</option>
-        {% endfor %}
-    </select>
-    <br><br>
+    {{ file_input("upload_csv", "file", "Upload CSV") }}
 
-    <label>Pickup bar/<i>Auftakt</i>?</label>
-    <input type="checkbox" name="has_anacrusis" value="1">
-    <br><br>
+    {# Build options [(1,1),(2,2)...(12,12)] #}
+    {% set bpm_options = [] %}
+    {% for i in range(1,13) %}
+        {% set _ = bpm_options.append((i, i)) %}
+    {% endfor %}
 
-    <label>Anacrusis length (beats, decimal ok):</label>
-    <input type="text" name="anacrusis" value="0.0"><br><br>
+    {{ custom_dropdown("bpm", "Beats per Measure", bpm_options, selected=3) }}
 
-    <label>Filename for download:</label>
-    <input type="text" name="filename" value="corrected.csv"><br><br>
+    {{ toggle("has_anacrusis", "Pickup bar / Auftakt?", checked=False) }}
+
+    {{ text_input("anacrusis", "anacrusis", "Anacrusis length (beats, decimal ok)", "0.0") }}
+
+    {{ text_input("filename", "filename", "Filename for download", "corrected.csv") }}
 
     <button type="submit">Process</button>
 </form>
@@ -34,4 +30,3 @@
 {% endif %}
 
 {% endblock %}
-

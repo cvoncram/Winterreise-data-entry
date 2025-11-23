@@ -1,8 +1,7 @@
-import uuid
 import os
 from fastapi import APIRouter, Request, UploadFile, Form
 from fastapi.responses import FileResponse
-from backend.dependencies import templates
+from backend.dependencies import templates, ensure_extension, store_file, sanitize_filename
 from backend.services.mei_service import insert_into_mei
 
 router = APIRouter(prefix="/insert-mei", tags=["mei"])
@@ -26,10 +25,14 @@ async def process(
     annot_label: str = Form(""),
     filename: str = Form(...)
 ):
+    filename = sanitize_filename(filename, default="modified.mei")
+    mei = ensure_extension(mei, (".mei", ".xml"))
+    csv = ensure_extension(csv, (".csv",))
     mei_bytes = await mei.read()
     csv_bytes = await csv.read()
 
-    out_path = os.path.join(TEMP, f"{uuid.uuid4()}.mei")
+    out_path = store_file(TEMP, ".csv")
+
 
     insert_into_mei(
         mei_bytes, csv_bytes,

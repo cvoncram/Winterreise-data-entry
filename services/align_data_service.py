@@ -1,11 +1,12 @@
 import pandas as pd
 import numpy as np
 from io import BytesIO
+from backend.dependencies import read_csv_upload, sanitize_filename
 
 def align_data(base_bytes, plugin_bytes, plugin_type, agg, output_path):
 
-    df_base = pd.read_csv(BytesIO(base_bytes))
-    df_plugin = pd.read_csv(BytesIO(plugin_bytes))
+    df_base = read_csv_upload(base_bytes)
+    df_plugin = read_csv_upload(plugin_bytes)
 
     time_col = df_plugin.columns[0]
     value_col = df_plugin.columns[1]

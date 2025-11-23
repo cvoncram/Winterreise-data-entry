@@ -1,7 +1,6 @@
-import uuid
 from fastapi import APIRouter, Request, UploadFile, Form
 from fastapi.responses import FileResponse
-from backend.dependencies import templates
+from backend.dependencies import templates, ensure_extension, store_file, sanitize_filename
 from backend.services.correct_beats_service import process_csv
 import os
 
@@ -24,8 +23,10 @@ async def correct(
     anacrusis: float = Form(0.0),
     filename: str = Form(...)
 ):
+    filename = sanitize_filename(filename, default="corrected.csv")
+    file = ensure_extension(file, (".csv"))
     content = await file.read()
-    output_path = os.path.join(TEMP, f"{uuid.uuid4()}.csv")
+    output_path = store_file(TEMP, ".csv")
 
     process_csv(content, bpm, float(anacrusis), bool(has_anacrusis), output_path)
 
