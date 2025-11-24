@@ -3,6 +3,8 @@ from fastapi.responses import FileResponse, JSONResponse
 from backend.dependencies import templates, ensure_extension, store_file, sanitize_filename
 from backend.services.correct_beats_service import add_tempo_column_inplace, process_csv
 from backend.services.csv_utils import rename_column_inplace, preview_csv as service_preview_csv
+from backend.services.correct_beats_service import recalc_measure_beat
+
 import os
 
 router = APIRouter(prefix="/correct", tags=["correct"])
@@ -75,13 +77,17 @@ async def rename_column(
 async def correct_beats_column(
     token: str = Form(...),
     bpm: int = Form(...),
-    has_anacrusis: bool = Form(False),
+    has_anacrusis: str = Form("0"),  # get as string
     anacrusis: float = Form(0.0)
 ):
-    from backend.services.correct_beats_service import recalc_measure_beat
     csv_path = os.path.join(TEMP, token)
+    
+    # convert string to bool
+    has_anacrusis_bool = str(has_anacrusis).lower() in ("1", "true")
+
+    
     try:
-        recalc_measure_beat(csv_path, bpm, anacrusis if has_anacrusis else 0)
+        recalc_measure_beat(csv_path, bpm, anacrusis if has_anacrusis_bool else 0)
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=400)
 

@@ -143,6 +143,12 @@ select:focus,
     transition: background-color 0.18s ease, color 0.18s ease;
 }
 
+.file-wrapper,
+.file-wrapper .custom-file-button {
+    width: 100%;           /* ensures same width as other form controls */
+    box-sizing: border-box; /* include padding/border */
+}
+
 .custom-file-button .file-name {
     font-size: 14px;
     white-space: nowrap;
@@ -174,7 +180,7 @@ select:focus,
 .toggle-switch {
     width: 46px;
     height: 24px;
-    background-color: var(--bg);
+    background-color: #385170;  /* darker background */
     border-radius: 12px;
     position: relative;
     transition: background-color 0.18s ease;
@@ -184,20 +190,21 @@ select:focus,
     content: "";
     width: 18px;
     height: 18px;
-    background-color: var(--page-bg);
+    background-color: #ececec;  /* light circle */
     border-radius: 50%;
     position: absolute;
     top: 3px;
     left: 3px;
-    transition: transform 0.18s ease;
+    transition: transform 0.18s ease, background-color 0.18s ease;
 }
 
 .toggle-checkbox:checked + .toggle-switch {
-    background-color: var(--fg);
+    background-color: #9fd3c7;   /* green when checked */
 }
 
 .toggle-checkbox:checked + .toggle-switch::before {
     transform: translateX(22px);
+    background-color: #142d4c;   /* darker circle when checked */
 }
 
 /* -------------------- */
@@ -274,14 +281,15 @@ select:focus,
 /* Tools and buttons   */
 /*---------------------*/
 
+/* Tool Buttons */
 .tool-buttons {
     display: flex;
-    margin-top: 15px;
     gap: 0;
+    margin-top: 15px;
 }
 
 .tool-buttons button {
-    flex: 1;
+    flex: 1;                  /* Equal width */
     padding: 10px;
     border: 1px solid #385170;
     background: var(--bg);
@@ -289,6 +297,7 @@ select:focus,
     cursor: pointer;
     font-weight: bold;
     border-right: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .tool-buttons button:last-child {
@@ -296,25 +305,41 @@ select:focus,
 }
 
 .tool-buttons button:hover {
-    background: #9fd3c7;
+    background: var(--hover-bg);
+    color: var(--hover-fg);
 }
 
+/* Tool Panel */
 .tool-panel {
     margin-top: 10px;
-    padding: 12px;
-    border: 1px solid #385170;
-    border-radius: 6px;
-    background: #9fd3c7;
+    padding: 16px;
+    border: 2px solid var(--fg);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--fg);
+
+    display: none;      /* <-- hide by default */
+    width: 100%;        /* make width consistent */
+    box-sizing: border-box;
 }
 
-.tool-panel.hidden {
-    display: none;
-}
-
-.tool-panel input,
-.tool-panel button {
+.tool-panel.visible {
     display: block;
-    margin-top: 6px;
+}
+/* Dropdown and file input hover for contrast */
+.custom-select-display:hover,
+.custom-file-button:hover {
+    background-color: var(--fg);
+    color: var(--hover-fg);
+}
+
+/* Preview table */
+.preview-container .preview-table th {
+    background-color: var(--fg);
+    color: var(--hover-fg);
+}
+.preview-container .preview-table td {
+    color: var(--page-fg);
 }
 
 
