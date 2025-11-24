@@ -238,3 +238,83 @@ select:focus,
     background-color: var(--hover-bg);
     color: var(--hover-fg);
 }
+
+/*---------------------*/
+/* Preview tables      */
+/*---------------------*/
+
+.preview-container {
+    border-radius: 6px;
+    overflow: hidden;           /* ensures table respects rounded corners */
+    border: 1px solid #385170;  /* outer border */
+    margin-top: 12px;
+}
+
+.preview-container .preview-table {
+    border-collapse: collapse;  /* keeps inner borders neat */
+    width: 100%;
+    background-color: #9fd3c7;
+}
+
+.preview-container .preview-table th,
+.preview-container .preview-table td {
+    border: 1px solid #385170;  /* inner borders */
+    padding: 8px;
+    text-align: left;
+    font-size: 14px;
+    color: var(--page-fg);
+    border-radius: 0;           /* remove radius from cells */
+}
+
+.preview-container .preview-table th {
+    background-color: var(--bg);
+}
+
+/*---------------------*/
+/* Tools and buttons   */
+/*---------------------*/
+
+.tool-buttons {
+    display: flex;
+    margin-top: 15px;
+    gap: 0;
+}
+
+.tool-buttons button {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #385170;
+    background: var(--bg);
+    color: var(--page-fg);
+    cursor: pointer;
+    font-weight: bold;
+    border-right: none;
+}
+
+.tool-buttons button:last-child {
+    border-right: 1px solid #385170;
+}
+
+.tool-buttons button:hover {
+    background: #9fd3c7;
+}
+
+.tool-panel {
+    margin-top: 10px;
+    padding: 12px;
+    border: 1px solid #385170;
+    border-radius: 6px;
+    background: #9fd3c7;
+}
+
+.tool-panel.hidden {
+    display: none;
+}
+
+.tool-panel input,
+.tool-panel button {
+    display: block;
+    margin-top: 6px;
+}
+
+

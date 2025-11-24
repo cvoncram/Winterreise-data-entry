@@ -7,26 +7,244 @@
 
     {{ file_input("upload_csv", "file", "Upload CSV") }}
 
-    {# Build options [(1,1),(2,2)...(12,12)] #}
-    {% set bpm_options = [] %}
-    {% for i in range(1,13) %}
-        {% set _ = bpm_options.append((i, i)) %}
-    {% endfor %}
+    <div id="csv-preview" class="preview-container">
+        <em>No file uploaded yet.</em>
+    </div><br>
 
-    {{ custom_dropdown("bpm", "Beats per Measure", bpm_options, selected=3) }}
+    <div id="tool-buttons" class="tool-buttons">
+    <button type="button" data-tool="rename">Rename and Move Column</button>
+    <button type="button" data-tool="beats">Correct Beats Column</button>
+    <button type="button" data-tool="tempo">Add/Replace Tempo Column</button>
+    </div><br>
 
-    {{ toggle("has_anacrusis", "Pickup bar / Auftakt?", checked=False) }}
-
-    {{ text_input("anacrusis", "anacrusis", "Anacrusis length (beats, decimal ok)", "0.0") }}
+    <div id="tool-panel" class="tool-panel hidden">
+    <!-- JS will fill this with the selected tool's UI -->
+    </div><br>
 
     {{ text_input("filename", "filename", "Filename for download", "corrected.csv") }}
 
-    <button type="submit">Process</button>
+    <button type="submit">Download edited file</button>
 </form>
 
 {% if result_ready %}
 <h3>Download corrected CSV:</h3>
 <a href="/correct/download/{{ token }}">Click here to download</a>
 {% endif %}
+
+<script src="/static/csv_preview.js"></script>
+<script>
+let CURRENT_TOKEN = null;
+
+initCsvPreview({
+    inputId: "upload_csv",
+    previewContainerId: "csv-preview",
+    previewEndpoint: "/correct/preview",
+    onTokenReady: function(token) {
+        CURRENT_TOKEN = token;
+        console.log("Preview token:", token);
+    }
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const panel = document.getElementById("tool-panel");
+    const buttons = document.querySelectorAll("#tool-buttons button");
+
+    let activeTool = null;
+
+    function closePanel() {
+        panel.classList.add("hidden");
+        panel.innerHTML = "";
+        activeTool = null;
+    }
+
+    function openPanel(toolName) {
+        panel.classList.remove("hidden");
+
+        if (toolName === "rename") {
+            panel.innerHTML = `
+                <h4>Rename & Move Column</h4>
+
+                <label>Column to rename (current name):</label>
+                <input type="text" id="rename_old" placeholder="measure.beat">
+                
+                <label>New column name:</label>
+                <input type="text" id="rename_new" placeholder="measure.beat">
+
+                <label>
+                    <input type="checkbox" id="rename_move_left" checked>
+                    Move renamed column to the left
+                </label>
+                
+                <button type="button" id="apply_rename">Apply</button>
+            `;
+        }
+
+        if (toolName === "beats") {
+            panel.innerHTML = `
+                <h4>Correct Beats</h4>
+                <label>BPM:</label>
+                <select id="beats_bpm">
+                    ${[1,2,3,4,5,6].map(b => `<option value="${b}" ${b===4?'selected':''}>${b}</option>`).join('')}
+                </select><br>
+
+                <label><input type="checkbox" id="beats_has_ana"> Contains pickup bar / Auftakt?</label><br>
+
+                <div id="beats_ana_panel" class="hidden">
+                    <label>Anacrusis:</label>
+                    <select id="beats_ana">
+                        <option value="0.5">&lt;1 beat</option>
+                        <option value="1">1 beat</option>
+                        <option value="1.5">&gt;1&lt;2 beats</option>
+                        <option value="2">2 beats</option>
+                        <option value="2.5">&gt;2&lt;3 beats</option>
+                        <option value="3">3 beats</option>
+                        <option value="3.5">&gt;3&lt;4 beats</option>
+                        <option value="4">4 beats</option>
+                        <option value="4.5">&gt;4&lt;5 beats</option>
+                        <option value="5">5 beats</option>
+                        <option value="5.5">&gt;5&lt;6 beats</option>
+                        <option value="6">6 beats</option>
+                    </select>
+                </div><br>
+
+                <button type="button" id="apply_beats">Apply</button>
+            `;
+
+            // Show/hide the anacrusis dropdown dynamically
+            const checkbox = panel.querySelector("#beats_has_ana");
+            const anaPanel = panel.querySelector("#beats_ana_panel");
+            checkbox.addEventListener("change", () => {
+                if (checkbox.checked) anaPanel.classList.remove("hidden");
+                else anaPanel.classList.add("hidden");
+            });
+        }
+
+        if (toolName === "tempo") {
+            panel.innerHTML = `
+                <h4>Tempo Column</h4>
+                <p>This will compute tempo (bpm) from the time column.</p>
+                <button type="button" id="apply_tempo">Apply</button>
+            `;
+        }
+    }
+
+    buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const tool = btn.dataset.tool;
+
+            if (activeTool === tool) {
+                closePanel(); // toggle closed
+                return;
+            }
+
+            activeTool = tool;
+            openPanel(tool);
+        });
+    });
+});
+</script>
+
+<script>
+document.addEventListener("click", async (e) => {
+    if (!e.target.matches("#apply_rename")) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const oldName = document.getElementById("rename_old").value.trim();
+    const newName = document.getElementById("rename_new").value.trim();
+    const moveLeft = document.getElementById("rename_move_left").checked;
+
+    if (!oldName || !newName) {
+        alert("Please enter both old and new column names.");
+        return;
+    }
+
+    const form = new FormData();
+    form.append("token", CURRENT_TOKEN);
+    form.append("old", oldName);
+    form.append("new", newName);
+    form.append("move_left", moveLeft ? "1" : "0");
+
+    const r = await fetch("/correct/rename", {
+        method: "POST",
+        body: form
+    });
+
+    const data = await r.json();
+
+    if (data.error) {
+        alert("Error: " + data.error);
+        return;
+    }
+
+    document.getElementById("csv-preview").innerHTML = data.html;
+});
+
+document.addEventListener("click", async (e) => {
+    if (!e.target.matches("#apply_beats")) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const bpm = parseInt(document.getElementById("beats_bpm").value);
+    const hasAna = document.getElementById("beats_has_ana").checked;
+    const anaVal = hasAna ? parseFloat(document.getElementById("beats_ana").value) : 0;
+
+    const form = new FormData();
+    form.append("token", CURRENT_TOKEN);
+    form.append("bpm", bpm);
+    form.append("has_anacrusis", hasAna);
+    form.append("anacrusis", anaVal);
+
+    const r = await fetch("/correct/beats", {
+        method: "POST",
+        body: form
+    });
+
+    const data = await r.json();
+    if (data.error) {
+        alert("Error: " + data.error);
+        return;
+    }
+
+    document.getElementById("csv-preview").innerHTML = data.html;
+});
+
+document.addEventListener("click", async (e) => {
+    if (!e.target.matches("#apply_tempo")) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!CURRENT_TOKEN) {
+        alert("Please upload a CSV first.");
+        return;
+    }
+
+    const form = new FormData();
+    form.append("token", CURRENT_TOKEN);
+
+    const r = await fetch("/correct/tempo", {
+        method: "POST",
+        body: form
+    });
+
+    const data = await r.json();
+
+    if (data.error) {
+        alert("Error: " + data.error);
+        return;
+    }
+
+    // Update preview
+    document.getElementById("csv-preview").innerHTML = data.html;
+});
+
+</script>
+
+
 
 {% endblock %}

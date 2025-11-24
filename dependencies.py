@@ -3,14 +3,17 @@ import uuid
 from fastapi.templating import Jinja2Templates
 from fastapi import HTTPException, UploadFile
 import pandas as pd
-from fastapi import HTTPException, UploadFile
-from io import StringIO
+from io import StringIO, BytesIO
 import time
 import re
+from typing import Union
 
 templates = Jinja2Templates(directory="backend/templates")
 
 def ensure_extension(file: UploadFile, allowed: tuple[str, ...]):
+    # Normalize the allowed tuple to avoid accidental string usage
+    if not isinstance(allowed, tuple):
+        allowed = tuple(allowed)
     if not file.filename.lower().endswith(allowed):
         raise HTTPException(
             status_code=400,
@@ -18,10 +21,25 @@ def ensure_extension(file: UploadFile, allowed: tuple[str, ...]):
         )
     return file
 
-def read_csv_upload(file: UploadFile) -> pd.DataFrame:
+def read_csv_upload(file_or_bytes: Union[UploadFile, bytes, bytearray, str]) -> pd.DataFrame:
+    """
+    Read CSV input and return a pandas DataFrame.
+    Accepts:
+      - an UploadFile (FastAPI) OR
+      - raw bytes (what you get from await file.read())
+      - a bytearray or string path/contents
+    """
     try:
-        data = file.file.read().decode("utf-8")
-        return pd.read_csv(StringIO(data))
+        if isinstance(file_or_bytes, UploadFile):
+            data = file_or_bytes.file.read().decode("utf-8")
+            return pd.read_csv(StringIO(data))
+        elif isinstance(file_or_bytes, (bytes, bytearray)):
+            return pd.read_csv(BytesIO(file_or_bytes))
+        elif isinstance(file_or_bytes, str):
+            # if a file path was passed
+            return pd.read_csv(file_or_bytes)
+        else:
+            raise ValueError("Unsupported input type for CSV reading")
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Invalid CSV: {e}")
 
@@ -37,7 +55,7 @@ def cleanup_tokens():
 
 def store_file(directory: str, extension: str) -> str:
     """
-    Creates a unique file path inside `directory` 
+    Creates a unique file path inside `directory`
     and returns its full path.
     """
     os.makedirs(directory, exist_ok=True)
