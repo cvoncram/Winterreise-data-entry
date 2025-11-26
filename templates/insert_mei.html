@@ -2,9 +2,9 @@
 {% block content %}
 
 {{ page_header(
-    "Correct measure.beat and tempo (bpm) column",
-    "This tool corrects the columns that are created when exporting the time instants layer from Sonic Visualiser. You may move and reorder columns if necessary. It also creates a tempo (bpm) column if desired.",
-    "Your CSV table must contain two columns: label/measure.beat and time values in seconds."
+    "Insert Sonic Visualiser data in MEI-XML files",
+    "This tool lets you insert data from Sonic Visualiser on tempo, dynamics, and central spectroid into corresponding MEI-XML files. You can adjust which column is inserted into which XML attribute, if needed.",
+    "Make sure that your CSV table has as many lines as the piece has beats to map onto in the MEI-XML file."
 ) }}
 
 <form id="insert-mei-form" enctype="multipart/form-data">
