@@ -1,22 +1,56 @@
 {% extends "base.html" %}
+<title>{% block title %}Generate 24 MEI files from templates{% endblock %}</title>
 {% block content %}
 
-<h2>Generate 24 MEI files from templates</h2>
-
 <form method="post" id="generate-mei-form">
-    {{ text_input("manifestation_id", "manifestation_id", "Manifestation xml:id (same for all 24 files)", "") }}
-    {{ text_input("year", "year", "Year (used for label and filenames)", "") }}
-    {{ text_input("pianist", "pianist", "Pianist (used in metadata and filenames)", "") }}
-    {{ text_input("creation_type", "creation_type", "Creation type (e.g. Studio - Radio Broadcast)", "") }}
-    {{ text_input("singer", "singer", "Singer (optional; defaults provided)", "Fischer-Dieskau, Dietrich") }}
+    <div style="display:flex; gap:10px;">
+        <div style="flex:1;">
+            {{ text_input("pianist_first", "pianist_first", "Pianist — First name") }}
+        </div>
+        <div style="flex:1;">
+            {{ text_input("pianist_last", "pianist_last", "Pianist — Last name") }}
+        </div>
+    </div>
+
+    {{ text_input("gnd_uid", "gnd_uid", "Pianist GND UID") }}
+    {{ text_input("year", "year", "Year of recording") }}
+
+    <!-- recording context dropdown -->
+    {{ custom_dropdown(
+        "context",
+        "Recording context",
+        [
+            ("Radio Broadcast", "Radio Broadcast"),
+            ("Recital", "Recital"),
+            ("Studio", "Studio"),
+            ("TV Production", "TV Production")
+        ],
+        selected=None
+    ) }}
+
+    {{ text_input("manifestation_id", "manifestation_id", "Manifestation xml:id (for all 24 files)") }}
+    {{ text_input("manifestation_n", "manifestation_n", "Number in the list of recordings (@n attribute in manifestation tag)", "1") }}
 
     <button type="submit">Generate 24 MEI files (ZIP)</button>
 </form>
 
 {% if result_ready %}
-    <h3>Files generated</h3>
-    <p>You can download the zip containing the 24 generated MEI files here:</p>
-    <a href="/generate-mei/download/{{ token }}" class="btn">Download MEI ZIP</a>
+    <h3>Generated MEI package</h3>
+
+    <div class="preview-container has-data" style="width:100%; max-width: 100%; box-sizing: border-box;">
+        <h4>Preview: &lt;meiHead&gt; of first file ({{ preview_filename }})</h4>
+        <pre style="white-space:pre-wrap; overflow:auto; max-height:500px;">{{ meihead_preview|e }}</pre>
+    </div>
+
+    <div style="margin-top:12px;">
+        <button 
+            type="button" 
+            class="form-control" 
+            onclick="window.location.href='/generate-mei/download/{{ token }}'">
+            Download ZIP with 24 MEI files
+        </button>
+    </div>
+
 {% endif %}
 
 {% endblock %}
