@@ -15,7 +15,7 @@ os.makedirs(TEMP, exist_ok=True)
 def page(request: Request):
     return templates.TemplateResponse(
         "correct_beats.html",
-        {"request": request, "title": "Correct Beats", "result_ready": False}
+        {"request": request, "title": "Correct Measure/Beat & Tempo", "result_ready": False}
     )
 
 @router.post("")

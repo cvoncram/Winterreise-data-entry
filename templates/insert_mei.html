@@ -1,7 +1,11 @@
-{% extends "base.html" %}
+{% extends "tool.html" %}
 {% block content %}
 
-<h2>Insert CSV data into MEI-XML files</h2>
+{{ page_header(
+    "Correct measure.beat and tempo (bpm) column",
+    "This tool corrects the columns that are created when exporting the time instants layer from Sonic Visualiser. You may move and reorder columns if necessary. It also creates a tempo (bpm) column if desired.",
+    "Your CSV table must contain two columns: label/measure.beat and time values in seconds."
+) }}
 
 <form id="insert-mei-form" enctype="multipart/form-data">
 

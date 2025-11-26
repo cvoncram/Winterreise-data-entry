@@ -1,7 +1,11 @@
-{% extends "base.html" %}
+{% extends "tool.html" %}
 {% block content %}
 
-<h2>Align Plugin Data</h2>
+{{ page_header(
+    "Correct measure.beat and tempo (bpm) column",
+    "This tool corrects the columns that are created when exporting the time instants layer from Sonic Visualiser. You may move and reorder columns if necessary. It also creates a tempo (bpm) column if desired.",
+    "Your CSV table must contain two columns: label/measure.beat and time values in seconds."
+) }}
 
 <form id="align-form">
 
@@ -19,7 +23,7 @@
 
     <!-- Collapsible tool panels -->
     <div id="centroid-tool" class="tool-panel">
-        <h3>Spectral Centroid</h3>
+        <h4>Spectral Centroid</h4>
         {{ file_input("sc-upload", "file", "Upload Spectral Centroid CSV") }}
         {{ toggle("sc-has-header", "This table contains headers", checked=false) }}
         <div id="sc-preview" class="preview-container"><em>No file uploaded yet.</em></div>
@@ -28,7 +32,7 @@
     </div>
 
     <div id="powercurve-tool" class="tool-panel">
-        <h3>PowerCurve</h3>
+        <h4>PowerCurve</h4>
         {{ file_input("power-upload", "file", "Upload PowerCurve CSV") }}
         {{ toggle("power-has-header", "This table contains headers") }}
 

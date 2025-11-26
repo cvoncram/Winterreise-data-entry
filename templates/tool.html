@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+<!-- ======================== -->
+<!--        CUSTOM MACROS     -->
+<!-- ======================== -->
+
+<!-- text input field -->
+{% macro text_input(id, name, label_text="", value="") %}
+<div class="form-row">
+    {% if label_text %}
+    <label for="{{ id }}">{{ label_text }}</label>
+    {% endif %}
+    <input type="text" id="{{ id }}" name="{{ name }}" value="{{ value }}" class="form-control">
+</div>
+{% endmacro %}
+
+<!-- upload file -->
+{% macro file_input(id, name, label_text="Choose File") %}
+<div class="form-row file-wrapper">
+    <label for="{{ id }}" class="custom-file-button">
+        <span>{{ label_text }}</span>
+        <span class="file-name" id="{{ id }}-name">No file chosen</span>
+    </label>
+
+    <input type="file" id="{{ id }}" name="{{ name }}" class="file-input-hidden">
+</div>
+{% endmacro %}
+
+<!-- dropdown menu -->
+{% macro custom_dropdown(name, label_text, options, selected=None) %}
+<div class="form-row custom-select-wrapper" id="{{ name }}-wrapper">
+    <label>{{ label_text }}</label>
+
+    <div class="custom-select-display" onclick="toggleSelect('{{ name }}-options')">
+        {{ selected if selected else "Select…" }}
+    </div>
+
+    <input id="{{ name }}" type="hidden" name="{{ name }}" value="{{ selected or ''}}">
+
+    <div class="custom-select-options" id="{{ name }}-options">
+        {% for value, text in options %}
+        <div onclick="chooseOption('{{ name }}-wrapper', '{{ value }}', '{{ text }}')">
+            {{ text }}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endmacro %}
+
+<!-- checkbox -->
+{% macro toggle(name, label_text, checked=False, value="1") %}
+<div class="toggle-wrapper">
+    <label for="{{ name }}">
+        <input id="{{ name }}" type="checkbox" name="{{ name }}" value="{{ value }}" class="toggle-checkbox" {% if
+            checked %}checked{% endif %}>
+        <span class="toggle-switch"></span>
+        <span class="toggle-label">{{ label_text }}</span>
+    </label>
+</div>
+{% endmacro %}
+
+{% macro page_header(page_title, page_description, page_rules) %}
+<div class="page-header">
+    <h2 class="page-title">{{ page_title }}</h2>
+    <h4>What this tool does</h4>
+    <p>{{ page_description }}</p>
+    <h4>Rules and constraints</h4>
+    <p>{{ page_rules }}</p>
+</div>
+{% endmacro %}
+
+
+

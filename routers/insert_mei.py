@@ -14,7 +14,7 @@ os.makedirs(TEMP, exist_ok=True)
 def page(request: Request):
     return templates.TemplateResponse(
         "insert_mei.html",
-        {"request": request, "result_ready": False}
+        {"request": request, "title": "Insert CSV in MEI-XML", "result_ready": False}
     )
 
 

@@ -1,7 +1,11 @@
-{% extends "base.html" %}
+{% extends "tool.html" %}
 {% block content %}
 
-<h2>Correct Measures/Beats and Tempo</h2>
+{{ page_header(
+    "Correct measure.beat and tempo (bpm) column",
+    "This tool corrects the columns that are created when exporting the time instants layer from Sonic Visualiser. You may move and reorder columns if necessary. It also creates a tempo (bpm) column if desired.",
+    "Your CSV table must contain two columns: label/measure.beat and time values in seconds."
+) }}
 
 <form id="correct-form" enctype="multipart/form-data">
 
@@ -54,7 +58,7 @@
     <div id="beats_ana_panel" class="hidden">
         {{ custom_dropdown(
             name="beats_ana",
-            label_text="Anacrusis:",
+            label_text="Pickup bar length:",
             options=[
                 ("0.5","<1 beat"), ("1","1 beat"), ("1.5",">1<2 beats"),
                 ("2","2 beats"), ("2.5",">2<3 beats"), ("3","3 beats"),

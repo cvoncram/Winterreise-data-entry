@@ -17,7 +17,10 @@ templates = Jinja2Templates(directory="backend/templates")
 # ---------------------------
 @router.get("")
 def align_page(request: Request):
-    return templates.TemplateResponse("align_data.html", {"request": request})
+    return templates.TemplateResponse(
+        "align_data.html",
+        {"request": request, "title": "Align & Map SV Output"}
+    )
 
 
 # ---------------------------

@@ -14,8 +14,10 @@ BASE_DIR = Path(__file__).resolve().parents[2]   # backend folder
 
 @router.get("")
 def page(request: Request):
-    return templates.TemplateResponse("generate_mei.html",
-                                      {"request": request, "result_ready": False})
+    return templates.TemplateResponse(
+        "generate_mei.html",
+        {"request": request,"title": "Generate MEI-XML files", "result_ready": False}
+    )
 
 
 @router.post("")

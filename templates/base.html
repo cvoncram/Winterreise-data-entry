@@ -1,148 +1,30 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+    {% block head %}
     <title>Winterreise Data Entry – {{ title }}</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/styles/style_1.css">
     <link rel="icon" href="/static/favicon.png" type="image/png">
+    {% endblock %}
 </head>
 
-<script>
-document.addEventListener("change", function (event) {
-    if (event.target.matches(".file-input-hidden")) {
-        const input = event.target;
-        const nameSpan = document.getElementById(input.id + "-name");
-        if (nameSpan) {
-            nameSpan.textContent = input.files[0]
-                ? input.files[0].name
-                : "No file chosen";
-        }
-    }
-});
-</script>
 
 <body>
+    <!-- navbar -->
+    <nav class="topnav">
+        <a href="/">Home</a>
+        <a href="/correct">Correct Measure/Beat & Tempo</a>
+        <a href="/align">Align & Map SV Output</a>
+        <a href="/generate-mei">Generate MEI-XML files</a>
+        <a href="/insert-mei">Insert CSV in MEI-XML</a>
+    </nav>
 
-<!-- ======================== -->
-<!--        TEXT INPUT        -->
-<!-- ======================== -->
-{% macro text_input(id, name, label_text="", value="") %}
-<div class="form-row">
-    {% if label_text %}
-    <label for="{{ id }}">{{ label_text }}</label>
-    {% endif %}
-    <input type="text"
-           id="{{ id }}"
-           name="{{ name }}"
-           value="{{ value }}"
-           class="form-control">
-</div>
-{% endmacro %}
-
-<!-- ======================== -->
-<!--        FILE INPUT        -->
-<!-- ======================== -->
-{% macro file_input(id, name, label_text="Choose File") %}
-<div class="form-row file-wrapper">
-    <label for="{{ id }}" class="custom-file-button">
-        <span>{{ label_text }}</span>
-        <span class="file-name" id="{{ id }}-name">No file chosen</span>
-    </label>
-
-    <input type="file"
-           id="{{ id }}"
-           name="{{ name }}"
-           class="file-input-hidden">
-</div>
-{% endmacro %}
-
-<!-- ======================== -->
-<!--     CUSTOM DROPDOWN      -->
-<!-- ======================== -->
-{% macro custom_dropdown(name, label_text, options, selected=None) %}
-<div class="form-row custom-select-wrapper" id="{{ name }}-wrapper">
-    <label>{{ label_text }}</label>
-
-    <div class="custom-select-display" onclick="toggleSelect('{{ name }}-options')">
-        {{ selected if selected else "Select…" }}
+    <div class="content">
+        {% block content %}{% endblock %}
     </div>
 
-    {# Hidden input must have an id so JS can read it by id (#beats_bpm etc.) #}
-    <input id="{{ name }}" type="hidden" name="{{ name }}" value="{{ selected or ''}}">
-
-    <div class="custom-select-options" id="{{ name }}-options">
-        {% for value, text in options %}
-        <div onclick="chooseOption('{{ name }}-wrapper', '{{ value }}', '{{ text }}')">
-            {{ text }}
-        </div>
-        {% endfor %}
-    </div>
-</div>
-{% endmacro %}
-
-<!-- ======================== -->
-<!--         CHECKBOX         -->
-<!-- ======================== -->
-{% macro toggle(name, label_text, checked=False, value="1") %}
-<div class="toggle-wrapper">
-    <label for="{{ name }}">
-        <input id="{{ name }}"
-               type="checkbox"
-               name="{{ name }}"
-               value="{{ value }}"
-               class="toggle-checkbox"
-               {% if checked %}checked{% endif %}>
-        <span class="toggle-switch"></span>
-        <span class="toggle-label">{{ label_text }}</span>
-    </label>
-</div>
-{% endmacro %}
-
-<!-- ======================== -->
-<!--         NAVBAR           -->
-<!-- ======================== -->
-<nav class="topnav">
-    <a href="/">Home</a>
-    <a href="/correct">Correct Measure/Beat & Tempo</a>
-    <a href="/align">Align & Map SV Output</a>
-    <a href="/generate-mei">Generate MEI-XML files</a>
-    <a href="/insert-mei">Insert CSV in MEI-XML</a>
-
-</nav>
-
-<div class="content">
-    {% block content %}{% endblock %}
-</div>
-
-
-<!-- ======================== -->
-<!--  Dropdown JavaScript     -->
-<!-- ======================== -->
-<script>
-document.addEventListener("click", function (event) {
-    const menus = document.querySelectorAll(".custom-select-options");
-    menus.forEach(menu => {
-        const wrapper = menu.closest(".custom-select-wrapper");
-        if (!wrapper.contains(event.target)) {
-            menu.style.display = "none";
-        }
-    });
-});
-
-function toggleSelect(id) {
-    const menu = document.getElementById(id);
-    document.querySelectorAll(".custom-select-options").forEach(m => {
-        if (m !== menu) m.style.display = "none";
-    });
-    menu.style.display = menu.style.display === "block" ? "none" : "block";
-}
-
-function chooseOption(wrapperId, value, text) {
-    const wrapper = document.getElementById(wrapperId);
-    wrapper.querySelector("input").value = value;
-    wrapper.querySelector(".custom-select-display").textContent = text;
-    wrapper.querySelector(".custom-select-options").style.display = "none";
-}
-</script>
-
+    <script src="/static/base.js"></script>
 </body>
+
 </html>

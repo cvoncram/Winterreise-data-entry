@@ -1,8 +1,14 @@
-{% extends "base.html" %}
-<title>{% block title %}Generate 24 MEI files from templates{% endblock %}</title>
+{% extends "tool.html" %}
 {% block content %}
 
-<form method="post" id="generate-mei-form">
+{{ page_header(
+    "Generate 24 MEI-XML Files",
+    "This tool generates a ZIP folder containing 24 structured MEI files from XML templates. You only need to supply metadata once and it will be applied consistently across all generated files.",
+    "All fields are required. The same xml:id is applied to all 24 songs. The output is one ZIP file containing all generated MEI-XMLs."
+) }}
+
+
+<form method="post" id="generate-mei-form" >
     <div style="display:flex; gap:10px;">
         <div style="flex:1;">
             {{ text_input("pianist_first", "pianist_first", "Pianist — First name") }}
