@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Generate 24 MEI files from templates</h2>
+
+<form method="post" id="generate-mei-form">
+    {{ text_input("manifestation_id", "manifestation_id", "Manifestation xml:id (same for all 24 files)", "") }}
+    {{ text_input("year", "year", "Year (used for label and filenames)", "") }}
+    {{ text_input("pianist", "pianist", "Pianist (used in metadata and filenames)", "") }}
+    {{ text_input("creation_type", "creation_type", "Creation type (e.g. Studio - Radio Broadcast)", "") }}
+    {{ text_input("singer", "singer", "Singer (optional; defaults provided)", "Fischer-Dieskau, Dietrich") }}
+
+    <button type="submit">Generate 24 MEI files (ZIP)</button>
+</form>
+
+{% if result_ready %}
+    <h3>Files generated</h3>
+    <p>You can download the zip containing the 24 generated MEI files here:</p>
+    <a href="/generate-mei/download/{{ token }}" class="btn">Download MEI ZIP</a>
+{% endif %}
+
+{% endblock %}

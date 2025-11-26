@@ -16,11 +16,15 @@ def read_csv_upload(content: bytes) -> pd.DataFrame:
     df = ensure_headers(df)
     return df
 
-def preview_csv(content: bytes, n: int = 10) -> str:
-    """Return HTML table preview of first n rows."""
-    df = pd.read_csv(BytesIO(content), dtype=str, header=None)
-    df = ensure_headers(df)
+def preview_csv(content: bytes, n: int = 10, has_header: bool = True) -> str:
+    """Return HTML table preview of first n rows, optionally using first row as header."""
+    if has_header:
+        df = pd.read_csv(BytesIO(content), header=0)
+    else:
+        df = pd.read_csv(BytesIO(content), header=None, names=["time", "value"])
+    
     return df.head(n).to_html(classes="preview-table", index=False, escape=True)
+
 
 def store_temp_csv(content: bytes, suffix=".csv") -> str:
     token = f"{uuid.uuid4()}{suffix}"

@@ -3,40 +3,157 @@
 
 <h2>Align Plugin Data</h2>
 
-<form action="/align" method="post" enctype="multipart/form-data">
-    {{ file_input("file", "base", "Browse Base CSV (with measure.beat + time)")}} 
-    <br>
-    {{ file_input("plugin-file", "plugin", "Browse Plugin CSV") }}
-    <br>
-    {{ custom_dropdown(
-        "plugin_type",
-        "Plugin Type",
-        [
-            ("powercurve", "PowerCurve"),
-            ("centroid", "Spectral Centroid")
-        ],
-        selected=None
-    ) }}
-    <br>
-    {{ custom_dropdown(
-        "agg",
-        "Aggregation (centroid only)",
-        [
-            ("mean", "mean"),
-            ("max", "max"),
-            ("min", "min")
-        ]
-    ) }}
-    <br>
-    {{ text_input("filename", "filename", "Filename", "combined.csv") }}
-    <br>
-    <button type="submit">Process</button>
+<form id="align-form">
+
+    {{ file_input("base-upload", "file", "Upload Base CSV (measure.beat + time)") }}
+    <div id="base-preview" class="preview-container">
+        <em>No file uploaded yet.</em>
+    </div>
+    <input type="hidden" id="base-token">
+
+    <!-- Tool buttons -->
+    <div id="tool-buttons" class="tool-buttons">
+        <button type="button" data-tool="centroid-tool">Spectral Centroid</button>
+        <button type="button" data-tool="powercurve-tool">PowerCurve</button>
+    </div>
+
+    <!-- Collapsible tool panels -->
+    <div id="centroid-tool" class="tool-panel">
+        <h3>Spectral Centroid</h3>
+        {{ file_input("sc-upload", "file", "Upload Spectral Centroid CSV") }}
+        {{ toggle("sc-has-header", "This table contains headers", checked=false) }}
+        <div id="sc-preview" class="preview-container"><em>No file uploaded yet.</em></div>
+        <input type="hidden" id="sc-token">
+        <button type="button" id="apply_centroid">Apply</button>
+    </div>
+
+    <div id="powercurve-tool" class="tool-panel">
+        <h3>PowerCurve</h3>
+        {{ file_input("power-upload", "file", "Upload PowerCurve CSV") }}
+        {{ toggle("power-has-header", "This table contains headers") }}
+
+        <div id="power-preview" class="preview-container"><em>No file uploaded yet.</em></div>
+        <input type="hidden" id="power-token">
+
+        {{ text_input("mf_ref","mf_ref","value for reference: mf (dBFS)", "-40") }}
+
+        <button type="button" id="apply_powercurve">Apply</button>
+    </div>
+
+    <div id="download-container"></div>
 </form>
 
-{% if result_ready %}
-<h3>Download combined CSV:</h3>
-<a href="/align/download/{{ token }}">Click here to download</a>
-{% endif %}
+<script src="/static/csv_preview.js"></script>
+
+<script>
+let CURRENT_TOKEN = null;
+
+// CSV previews
+initCsvPreview({
+    inputId:"base-upload",
+    previewContainerId:"base-preview",
+    previewEndpoint:"/align/preview_csv",
+    onTokenReady:t=>document.getElementById("base-token").value=t
+});
+
+initCsvPreview({
+    inputId:"sc-upload",
+    previewContainerId:"sc-preview",
+    previewEndpoint:"/align/preview_csv",
+    onTokenReady:t=>document.getElementById("sc-token").value=t,
+    hasHeaderId:"sc-has-header"
+});
+
+initCsvPreview({
+    inputId:"power-upload",
+    previewContainerId:"power-preview",
+    previewEndpoint:"/align/preview_csv",
+    onTokenReady:t=>document.getElementById("power-token").value=t,
+    hasHeaderId:"power-has-header"
+});
+
+// Collapsible tool panel controller
+document.addEventListener("DOMContentLoaded", () => {
+    const panelButtons = document.querySelectorAll("#tool-buttons button");
+    let activeTool = null;
+
+    panelButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const toolId = btn.dataset.tool;
+            const panel = document.getElementById(toolId);
+
+            if (activeTool === toolId) {
+                panel.classList.remove("visible");
+                activeTool = null;
+                return;
+            }
+
+            // Hide all panels first
+            document.querySelectorAll(".tool-panel").forEach(p => p.classList.remove("visible"));
+
+            panel.classList.add("visible");
+            activeTool = toolId;
+        });
+    });
+});
+
+// Apply functions
+document.getElementById("apply_centroid").addEventListener("click", async () => {
+    const baseToken = document.getElementById("base-token").value;
+    const scToken = document.getElementById("sc-token").value;
+    if (!baseToken || !scToken) return alert("Please upload both CSVs");
+
+    const form = new FormData();
+    form.append("base_token", baseToken);
+    form.append("sc_token", scToken);
+
+    const r = await fetch("/align/apply_spectral_centroid", { method: "POST", body: form });
+    const data = await r.json();
+
+    // Update base-token so next tool uses augmented CSV
+    document.getElementById("base-token").value = data.token;
+
+    const previewForm = new FormData();
+    previewForm.append("token", data.token);
+    const previewResp = await fetch("/align/preview_temp_csv", { method: "POST", body: previewForm });
+    const previewData = await previewResp.json();
+    document.getElementById("base-preview").innerHTML = previewData.html;
+
+    // Show download button immediately (filename fixed, no dynamic update)
+    document.getElementById("download-container").innerHTML =
+        `<a href="/align/download/${data.token}" download="aligned.csv">
+            <button type="button">Download file</button>
+        </a>`;
+});
+
+document.getElementById("apply_powercurve").addEventListener("click", async () => {
+    const baseToken = document.getElementById("base-token").value;
+    const powerToken = document.getElementById("power-token").value;
+    if (!baseToken || !powerToken) return alert("Please upload both CSVs");
+
+    const form = new FormData();
+    form.append("base_token", baseToken);
+    form.append("power_token", powerToken);
+    form.append("mf_ref", document.getElementById("mf_ref").value);
+
+    const r = await fetch("/align/apply_powercurve", { method: "POST", body: form });
+    const data = await r.json();
+
+    // Update base-token so next tool uses augmented CSV
+    document.getElementById("base-token").value = data.token;
+
+    const previewForm = new FormData();
+    previewForm.append("token", data.token);
+    const previewResp = await fetch("/align/preview_temp_csv", { method: "POST", body: previewForm });
+    const previewData = await previewResp.json();
+    document.getElementById("base-preview").innerHTML = previewData.html;
+
+    // Show download button immediately (filename fixed)
+    document.getElementById("download-container").innerHTML =
+        `<a href="/align/download/${data.token}" download="aligned.csv">
+            <button type="button">Download file</button>
+        </a>`;
+});
+</script>
 
 {% endblock %}
-

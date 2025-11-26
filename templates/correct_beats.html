@@ -1,30 +1,31 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Correct Beats and Tempo</h2>
+<h2>Correct Measures/Beats and Tempo</h2>
 
-<form action="/correct" method="post" enctype="multipart/form-data">
+<form id="correct-form" enctype="multipart/form-data">
 
+    <!-- Upload CSV -->
     {{ file_input("upload_csv", "file", "Upload CSV") }}
 
+    <!-- CSV preview -->
     <div id="csv-preview" class="preview-container">
         <em>No file uploaded yet.</em>
-    </div><br>
+    </div>
 
+    <!-- Tool buttons -->
     <div id="tool-buttons" class="tool-buttons">
-        <button type="button" data-tool="rename">Rename and Move Column</button>
+        <button type="button" data-tool="rename">Rename & Move Column</button>
         <button type="button" data-tool="beats">Correct Beats Column</button>
         <button type="button" data-tool="tempo">Add/Replace Tempo Column</button>
-    </div><br>
+    </div>
 
-    <div id="tool-panel"></div><br>
+    <!-- Tool panel -->
+    <div id="tool-panel" class="tool-panel"></div>
 
-    {{ text_input("filename", "filename", "Filename for download", "corrected.csv") }}
-    <br>
-
-    <div id="download-container" style="margin-top: 10px;"></div>
+    <!-- Download area -->
+    <div id="download-container" style="margin-top:10px;"></div>
 </form>
-
 
 <!-- =================================================== -->
 <!--                TOOL PANEL TEMPLATES                 -->
@@ -32,17 +33,9 @@
 
 <template id="tpl-rename-tool">
     <h4>Rename & Move Column</h4>
-
-    <label>Column to rename (current name):</label>
-    <input type="text" id="rename_old" placeholder="label">
-    <br>
-
-    <label>New column name:</label>
-    <input type="text" id="rename_new" placeholder="measure.beat">
-    <br>
-
-    {{ toggle("rename_move_left", "Move renamed column to the left", checked=false) }}
-
+    {{ text_input("rename_old", "rename_old", "Column to rename (current name)") }}
+    {{ text_input("rename_new", "rename_new", "New column name") }}
+    {{ toggle("rename_move_left", "Move renamed column to the left") }}
     <button type="button" id="apply_rename">Apply</button>
 </template>
 
@@ -56,7 +49,7 @@
         selected=4
     ) }}
 
-    {{ toggle("beats_has_ana", "Contains pickup bar / Auftakt?", checked=false) }}
+    {{ toggle("beats_has_ana", "Contains pickup bar / Auftakt?") }}
 
     <div id="beats_ana_panel" class="hidden">
         {{ custom_dropdown(
@@ -81,12 +74,11 @@
     <button type="button" id="apply_tempo">Apply</button>
 </template>
 
-
 <!-- =================================================== -->
 <!--                CSV PREVIEW SCRIPT                   -->
 <!-- =================================================== -->
-<script src="/static/csv_preview.js"></script>
 
+<script src="/static/csv_preview.js"></script>
 <script>
 let CURRENT_TOKEN = null;
 
@@ -94,16 +86,14 @@ initCsvPreview({
     inputId: "upload_csv",
     previewContainerId: "csv-preview",
     previewEndpoint: "/correct/preview",
-    onTokenReady: function(token) {
-        CURRENT_TOKEN = token;
-    }
+    onTokenReady: token => CURRENT_TOKEN = token
 });
 </script>
-
 
 <!-- =================================================== -->
 <!--               TOOL PANEL CONTROLLER JS              -->
 <!-- =================================================== -->
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     const panel = document.getElementById("tool-panel");
@@ -142,97 +132,79 @@ document.addEventListener("DOMContentLoaded", () => {
 
             activeTool = tool;
 
-            if (tool === "rename")    openPanel("tpl-rename-tool");
-            if (tool === "beats")     openPanel("tpl-beats-tool");
-            if (tool === "tempo")     openPanel("tpl-tempo-tool");
+            if (tool === "rename") openPanel("tpl-rename-tool");
+            if (tool === "beats") openPanel("tpl-beats-tool");
+            if (tool === "tempo") openPanel("tpl-tempo-tool");
         });
     });
 });
 </script>
 
-
 <!-- =================================================== -->
 <!--                   APPLY ACTIONS                     -->
 <!-- =================================================== -->
+
 <script>
-//
-// Apply Rename
-//
-document.addEventListener("click", async (e) => {
-    if (!e.target.matches("#apply_rename")) return;
-
-    const oldName = document.getElementById("rename_old").value.trim();
-    const newName = document.getElementById("rename_new").value.trim();
-    const moveLeft = document.getElementById("rename_move_left").checked;
-
-    const form = new FormData();
-    form.append("token", CURRENT_TOKEN);
-    form.append("old", oldName);
-    form.append("new", newName);
-    form.append("move_left", moveLeft ? "1" : "0");
-
-    const r = await fetch("/correct/rename", { method: "POST", body: form });
-    const data = await r.json();
-
-    if (!data.error) {
-        document.getElementById("csv-preview").innerHTML = data.html;
+document.addEventListener("click", async e => {
+    // Helper: show download button
+    function showDownloadButton(token) {
         document.getElementById("download-container").innerHTML =
-            `<a href="/correct/download/${CURRENT_TOKEN}">
-                <button type="button">Download edited file</button>
+            `<a href="/correct/download/${token}" download="corrected.csv">
+                <button type="button">Download file</button>
             </a>`;
     }
-});
 
+    // Rename
+    if (e.target.matches("#apply_rename")) {
+        const oldName = document.getElementById("rename_old").value.trim();
+        const newName = document.getElementById("rename_new").value.trim();
+        const moveLeft = document.getElementById("rename_move_left").checked;
 
-//
-// Apply Beats
-//
-document.addEventListener("click", async (e) => {
-    if (!e.target.matches("#apply_beats")) return;
+        const form = new FormData();
+        form.append("token", CURRENT_TOKEN);
+        form.append("old", oldName);
+        form.append("new", newName);
+        form.append("move_left", moveLeft ? "1" : "0");
 
-    const bpm = document.querySelector("#beats_bpm-wrapper input").value;
-    const hasAna = document.getElementById("beats_has_ana").checked;
-    const anaVal = hasAna
-        ? document.querySelector("#beats_ana-wrapper input").value
-        : 0;
-
-    const form = new FormData();
-    form.append("token", CURRENT_TOKEN);
-    form.append("bpm", bpm);
-    form.append("has_anacrusis", hasAna ? "1" : "0");
-    form.append("anacrusis", anaVal);
-
-    const r = await fetch("/correct/beats", { method: "POST", body: form });
-    const data = await r.json();
-
-    if (!data.error) {
-        document.getElementById("csv-preview").innerHTML = data.html;
-        document.getElementById("download-container").innerHTML =
-            `<a href="/correct/download/${CURRENT_TOKEN}">
-                <button type="button">Download edited file</button>
-            </a>`;
+        const r = await fetch("/correct/rename", { method:"POST", body: form });
+        const data = await r.json();
+        if (!data.error) {
+            document.getElementById("csv-preview").innerHTML = data.html;
+            showDownloadButton(CURRENT_TOKEN);
+        }
     }
-});
 
+    // Beats
+    if (e.target.matches("#apply_beats")) {
+        const bpm = document.querySelector("#beats_bpm-wrapper input").value;
+        const hasAna = document.getElementById("beats_has_ana").checked;
+        const anaVal = hasAna ? document.querySelector("#beats_ana-wrapper input").value : 0;
 
-//
-// Apply Tempo
-//
-document.addEventListener("click", async (e) => {
-    if (!e.target.matches("#apply_tempo")) return;
+        const form = new FormData();
+        form.append("token", CURRENT_TOKEN);
+        form.append("bpm", bpm);
+        form.append("has_anacrusis", hasAna ? "1" : "0");
+        form.append("anacrusis", anaVal);
 
-    const form = new FormData();
-    form.append("token", CURRENT_TOKEN);
+        const r = await fetch("/correct/beats", { method:"POST", body: form });
+        const data = await r.json();
+        if (!data.error) {
+            document.getElementById("csv-preview").innerHTML = data.html;
+            showDownloadButton(CURRENT_TOKEN);
+        }
+    }
 
-    const r = await fetch("/correct/tempo", { method: "POST", body: form });
-    const data = await r.json();
+    // Tempo
+    if (e.target.matches("#apply_tempo")) {
+        const form = new FormData();
+        form.append("token", CURRENT_TOKEN);
 
-    if (!data.error) {
-        document.getElementById("csv-preview").innerHTML = data.html;
-        document.getElementById("download-container").innerHTML =
-            `<a href="/correct/download/${CURRENT_TOKEN}">
-                <button type="button">Download edited file</button>
-            </a>`;
+        const r = await fetch("/correct/tempo", { method:"POST", body: form });
+        const data = await r.json();
+        if (!data.error) {
+            document.getElementById("csv-preview").innerHTML = data.html;
+            showDownloadButton(CURRENT_TOKEN);
+        }
     }
 });
 </script>

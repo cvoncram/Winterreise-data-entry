@@ -1,30 +1,118 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Insert CSV into MEI</h2>
+<h2>Insert CSV data into MEI-XML files</h2>
 
-<form action="/insert-mei" method="post" enctype="multipart/form-data">
+<form id="insert-mei-form" enctype="multipart/form-data">
 
-    {{ file_input("mei_file", "mei", "Upload MEI") }}
+    {{ file_input("csv-upload", "csv", "Upload CSV") }}
+    <div id="csv-preview" class="preview-container">
+        <em>No CSV uploaded yet.</em>
+    </div>
+    <input type="hidden" id="csv-token">
 
-    {{ file_input("csv_file", "csv", "Upload CSV") }}
+    {{ file_input("mei-file-upload", "mei", "Upload MEI") }}
+    <div id="mei-filename"></div>
 
-    {{ text_input("tempo", "tempo", "CSV column → tempo (mm)") }}
+    <!-- Dropdowns -->
+    <div id="column-selects" style="display:none; margin-top:10px; gap:10px; display:flex;">
+        <div style="flex:1;">
+            {{ custom_dropdown("tempo_col", "tempo (mm)", []) }}
+        </div>
+        <div style="flex:1;">
+            {{ custom_dropdown("dynam_col", "dynam (n)", []) }}
+        </div>
+        <div style="flex:1;">
+            {{ custom_dropdown("annot_col", "annot (spectral centroid, n)", []) }}
+        </div>
+    </div>
 
-    {{ text_input("dynam", "dynam", "CSV column → dynam (n)") }}
-
-    {{ text_input("annot", "annot", "CSV column → annot (n)") }}
-
-    {{ text_input("annot_label", "annot_label", "Annot label (optional)") }}
-
-    {{ text_input("filename", "filename", "Filename", "modified.mei") }}
-
-    <button type="submit">Process</button>
+    <button type="button" id="process-mei">Process</button>
 </form>
 
-{% if result_ready %}
-<h3>Download modified MEI:</h3>
-<a href="/insert-mei/download/{{ token }}">Click here to download</a>
-{% endif %}
+<div id="mei-preview" class="preview-container" style="display:none;"></div>
+<div id="download-container"></div>
+
+<script src="/static/csv_preview.js"></script>
+<script src="/static/mei_preview.js"></script>
+
+<script>
+let CSV_TOKEN = null;
+
+// CSV preview
+initCsvPreview({
+    inputId: "csv-upload",
+    previewContainerId: "csv-preview",
+    previewEndpoint: "/insert-mei/preview_csv",
+    onTokenReady: t => {
+        CSV_TOKEN = t;
+        document.getElementById("csv-token").value = t;
+        populateDropdowns(t);
+    }
+});
+
+async function populateDropdowns(token) {
+    const form = new FormData();
+    form.append("token", token);
+    const r = await fetch("/insert-mei/csv_columns", { method: "POST", body: form });
+    const data = await r.json();
+
+    const columns = data.columns;
+    const preselects = {
+        tempo_col: columns[2] ?? "",
+        dynam_col: columns[5] ?? "",
+        annot_col: columns[3] ?? ""
+    };
+
+    for (const id in preselects) {
+        const selectInput = document.getElementById(id);
+        const wrapper = document.getElementById(id + "-wrapper");
+        const optionsDiv = document.getElementById(id + "-options");
+        optionsDiv.innerHTML = "";
+
+        columns.forEach(col => {
+            const opt = document.createElement("div");
+            opt.textContent = col;
+            opt.onclick = () => {
+                selectInput.value = col;
+                wrapper.querySelector(".custom-select-display").textContent = col;
+            };
+            optionsDiv.appendChild(opt);
+        });
+
+        // preselect
+        if (preselects[id]) {
+            selectInput.value = preselects[id];
+            wrapper.querySelector(".custom-select-display").textContent = preselects[id];
+        }
+    }
+
+    document.getElementById("column-selects").style.display = "flex";
+}
+
+// Process MEI insertion
+document.getElementById("process-mei").addEventListener("click", async () => {
+    const meiFile = document.getElementById("mei-file-upload").files[0];
+    if (!CSV_TOKEN || !meiFile) return alert("Upload both CSV and MEI.");
+
+    const form = new FormData();
+    form.append("csv_token", CSV_TOKEN);
+    form.append("mei_file", meiFile);
+    form.append("tempo_col", document.getElementById("tempo_col").value);
+    form.append("dynam_col", document.getElementById("dynam_col").value);
+    form.append("annot_col", document.getElementById("annot_col").value);
+
+    const r = await fetch("/insert-mei/process", { method: "POST", body: form });
+    const data = await r.json();
+
+    // Render MEI preview using helper
+    renderMEIPreview(data.preview_measures);
+
+    document.getElementById("download-container").innerHTML =
+        `<a href="/insert-mei/download/${data.token}" download="modified.mei">
+            <button type="button">Download MEI</button>
+        </a>`;
+});
+</script>
 
 {% endblock %}

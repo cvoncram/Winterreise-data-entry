@@ -32,30 +32,20 @@ def find_elem(add, tag, tstamp):
     return None
 
 def insert_into_mei(mei_bytes, csv_bytes,
-                    tempo_col, dynam_col, annot_col, annot_label,
+                    tempo_col, dynam_col, annot_col,
                     output_path):
 
     tree = etree.parse(BytesIO(mei_bytes))
     root = tree.getroot()
-
     df = read_csv_upload(csv_bytes)
 
-    mb_col = None
-    for c in df.columns:
-        if c.lower() in ("measure.beat", "measure_beat", "measure.beats"):
-            mb_col = c
-            break
+    mb_col = next((c for c in df.columns if c.lower() in ("measure.beat","measure_beat","measure.beats")), None)
     if mb_col is None:
         raise ValueError("CSV missing measure.beat")
 
     for _, row in df.iterrows():
-
         mb = str(row[mb_col]).strip()
-        if "." in mb:
-            measure_part, beat_part = mb.split(".", 1)
-        else:
-            measure_part = mb
-            beat_part = "1"
+        measure_part, beat_part = (mb.split(".",1) + ["1"])[:2]
 
         m_el = find_measure(root, measure_part)
         if m_el is None:
@@ -63,43 +53,43 @@ def insert_into_mei(mei_bytes, csv_bytes,
 
         add = get_or_create_add(m_el)
 
-        # tempo
-        if tempo_col and tempo_col in df.columns:
-            val = row[tempo_col]
-            if pd.notna(val):
-                el = find_elem(add, "tempo", beat_part)
-                if el is None:
-                    el = etree.Element("{http://www.music-encoding.org/ns/mei}tempo")
-                    el.set("tstamp.ges", beat_part)
-                    add.append(el)
-                el.set("mm", str(val))
-                el.set("type", "performed")
+        if tempo_col and tempo_col in df.columns and pd.notna(row[tempo_col]):
+            el = find_elem(add, "tempo", beat_part)
+            if el is None:
+                el = etree.Element("{http://www.music-encoding.org/ns/mei}tempo")
+                el.set("tstamp.ges", beat_part)
+                add.append(el)
+            el.set("mm", str(row[tempo_col]))
+            el.set("type","performed")
 
-        # dynam
-        if dynam_col and dynam_col in df.columns:
-            val = row[dynam_col]
-            if pd.notna(val):
-                el = find_elem(add, "dynam", beat_part)
-                if el is None:
-                    el = etree.Element("{http://www.music-encoding.org/ns/mei}dynam")
-                    el.set("tstamp.ges", beat_part)
-                    add.append(el)
-                el.set("n", str(val))
-                el.set("type", "performed")
+        if dynam_col and dynam_col in df.columns and pd.notna(row[dynam_col]):
+            el = find_elem(add, "dynam", beat_part)
+            if el is None:
+                el = etree.Element("{http://www.music-encoding.org/ns/mei}dynam")
+                el.set("tstamp.ges", beat_part)
+                add.append(el)
+            el.set("n", str(row[dynam_col]))
+            el.set("type","performed")
 
-        # annot
-        if annot_col and annot_col in df.columns:
-            val = row[annot_col]
-            if pd.notna(val):
-                el = find_elem(add, "annot", beat_part)
-                if el is None:
-                    el = etree.Element("{http://www.music-encoding.org/ns/mei}annot")
-                    el.set("tstamp.ges", beat_part)
-                    add.append(el)
-                el.set("n", str(val))
-                if annot_label:
-                    el.set("label", annot_label)
-                el.set("type", "performed")
+        if annot_col and annot_col in df.columns and pd.notna(row[annot_col]):
+            el = find_elem(add, "annot", beat_part)
+            if el is None:
+                el = etree.Element("{http://www.music-encoding.org/ns/mei}annot")
+                el.set("tstamp.ges", beat_part)
+                add.append(el)
+            el.set("n", str(row[annot_col]))
+            el.set("label", "spectral centroid")
+            el.set("type","performed")
 
     tree.write(output_path, encoding="utf-8", xml_declaration=True, pretty_print=True)
 
+    # Return first 10 + last 10 measures as strings, stripping xmlns for preview
+    measures = get_measures(root)
+    preview_measures = []
+    for m in (measures[:10] + measures[-10:]):
+        m_copy = etree.tostring(m, encoding="unicode", pretty_print=True)
+        # Remove the xmlns declaration for a cleaner preview
+        m_copy = m_copy.replace(' xmlns="http://www.music-encoding.org/ns/mei"', '')
+        preview_measures.append(m_copy)
+
+    return preview_measures

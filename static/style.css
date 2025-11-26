@@ -3,8 +3,8 @@
 /* -------------------- */
 body {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    padding: 0;
     margin: 0;
+    padding: 0;
     background-color: #ececec;
     color: #142d4c;
 }
@@ -34,9 +34,7 @@ body {
 /* -------------------- */
 .content {
     padding: 20px;
-    text-align: left;
-    margin-left: 25%;
-    margin-right: 25%;
+    margin: 0 25%;
 }
 
 /* -------------------- */
@@ -52,7 +50,7 @@ body {
 .form-row label {
     margin-bottom: 6px;
     font-weight: bold;
-    color: #385170 !important;
+    color: #385170;
 }
 
 /* -------------------- */
@@ -72,14 +70,14 @@ body {
 /* -------------------- */
 /* Generic full-width form controls */
 /* -------------------- */
-.form-control,
-button,
 input[type="text"],
-input[type="email"],
 input[type="number"],
+input[type="email"],
 input[type="search"],
 textarea,
-select {
+select,
+.form-control,
+button {
     width: 100%;
     padding: var(--padding);
     border-radius: var(--radius);
@@ -89,13 +87,13 @@ select {
     background-color: var(--bg);
     box-sizing: border-box;
     transition: background-color 0.18s ease, color 0.18s ease, box-shadow 0.12s;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
 }
 
-input[type="text"],
-textarea {
+button {
+    cursor: pointer;
+}
+
+input[type="text"], textarea {
     cursor: text;
 }
 
@@ -119,6 +117,7 @@ select:focus,
 /* -------------------- */
 /* File input (custom) */
 /* -------------------- */
+
 .file-input-hidden {
     position: absolute;
     opacity: 0;
@@ -128,6 +127,7 @@ select:focus,
 .file-wrapper {
     width: 100%;
     margin-bottom: 20px;
+    
 }
 
 .custom-file-button {
@@ -141,12 +141,9 @@ select:focus,
     color: var(--fg);
     cursor: pointer;
     transition: background-color 0.18s ease, color 0.18s ease;
-}
-
-.file-wrapper,
-.file-wrapper .custom-file-button {
-    width: 100%;           /* ensures same width as other form controls */
-    box-sizing: border-box; /* include padding/border */
+    max-width: 100%;
+    box-sizing: border-box;
+    
 }
 
 .custom-file-button .file-name {
@@ -180,7 +177,7 @@ select:focus,
 .toggle-switch {
     width: 46px;
     height: 24px;
-    background-color: #385170;  /* darker background */
+    background-color: #385170;
     border-radius: 12px;
     position: relative;
     transition: background-color 0.18s ease;
@@ -190,7 +187,7 @@ select:focus,
     content: "";
     width: 18px;
     height: 18px;
-    background-color: #ececec;  /* light circle */
+    background-color: #ececec;
     border-radius: 50%;
     position: absolute;
     top: 3px;
@@ -199,12 +196,12 @@ select:focus,
 }
 
 .toggle-checkbox:checked + .toggle-switch {
-    background-color: #9fd3c7;   /* green when checked */
+    background-color: #ececec;
 }
 
 .toggle-checkbox:checked + .toggle-switch::before {
     transform: translateX(22px);
-    background-color: #142d4c;   /* darker circle when checked */
+    background-color: #142d4c;
 }
 
 /* -------------------- */
@@ -249,39 +246,43 @@ select:focus,
 /*---------------------*/
 /* Preview tables      */
 /*---------------------*/
-
 .preview-container {
-    border-radius: 6px;
-    overflow: hidden;           /* ensures table respects rounded corners */
-    border: 1px solid #385170;  /* outer border */
-    margin-top: 12px;
+    padding: 0;
+    overflow: hidden;
+    min-height: 20px;
+}
+
+.preview-container.has-data {
+    border: 2px solid var(--fg);
+    padding: 10px;
+    border-radius: var(--radius);
 }
 
 .preview-container .preview-table {
-    border-collapse: collapse;  /* keeps inner borders neat */
+    border-collapse: collapse;
     width: 100%;
-    background-color: #9fd3c7;
+    background-color: var(--bg);
 }
 
 .preview-container .preview-table th,
 .preview-container .preview-table td {
-    border: 1px solid #385170;  /* inner borders */
+    border: 1px solid var(--fg);
     padding: 8px;
-    text-align: left;
     font-size: 14px;
-    color: var(--page-fg);
-    border-radius: 0;           /* remove radius from cells */
 }
 
 .preview-container .preview-table th {
-    background-color: var(--bg);
+    background-color: var(--fg);
+    color: var(--hover-fg);
+}
+
+.preview-container .preview-table td {
+    color: var(--page-fg);
 }
 
 /*---------------------*/
 /* Tools and buttons   */
 /*---------------------*/
-
-/* Tool Buttons */
 .tool-buttons {
     display: flex;
     gap: 0;
@@ -289,19 +290,18 @@ select:focus,
 }
 
 .tool-buttons button {
-    flex: 1;                  /* Equal width */
+    flex: 1;
     padding: 10px;
-    border: 1px solid #385170;
+    border: 1px solid var(--fg);
     background: var(--bg);
     color: var(--page-fg);
-    cursor: pointer;
     font-weight: bold;
-    border-right: none;
+    cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .tool-buttons button:last-child {
-    border-right: 1px solid #385170;
+    border-right: 1px solid var(--fg);
 }
 
 .tool-buttons button:hover {
@@ -309,7 +309,6 @@ select:focus,
     color: var(--hover-fg);
 }
 
-/* Tool Panel */
 .tool-panel {
     margin-top: 10px;
     padding: 16px;
@@ -317,29 +316,43 @@ select:focus,
     border-radius: var(--radius);
     background: var(--bg);
     color: var(--fg);
-
-    display: none;      /* <-- hide by default */
-    width: 100%;        /* make width consistent */
+    display: none;
+    width: 100%;
     box-sizing: border-box;
 }
 
 .tool-panel.visible {
     display: block;
 }
-/* Dropdown and file input hover for contrast */
-.custom-select-display:hover,
-.custom-file-button:hover {
-    background-color: var(--fg);
-    color: var(--hover-fg);
+
+/* Spacing helper */
+.preview-container,
+.tool-panel,
+.tool-buttons,
+form > * {
+    margin: 10px 0;
 }
 
-/* Preview table */
-.preview-container .preview-table th {
-    background-color: var(--fg);
-    color: var(--hover-fg);
-}
-.preview-container .preview-table td {
-    color: var(--page-fg);
+.tool-panel button,
+.tool-panel input,
+.tool-panel .custom-select-wrapper .custom-select-options,
+.tool-panel .custom-select-wrapper .custom-select-display, 
+.tool-panel .file-wrapper .custom-file-button {
+    border: 1px solid var(--fg);
 }
 
+/* links that look like buttons */ 
 
+.btn {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #ddd;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #000;
+    cursor: pointer;
+}
+.btn:hover {
+    background-color: #ccc;
+}

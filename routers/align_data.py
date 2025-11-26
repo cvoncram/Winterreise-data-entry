@@ -1,44 +1,120 @@
-import os
+from io import BytesIO
 from fastapi import APIRouter, Request, UploadFile, Form
-from fastapi.responses import FileResponse
-from backend.dependencies import templates, ensure_extension, store_file, sanitize_filename
-from backend.services.align_data_service import align_data
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.templating import Jinja2Templates
+import os
+import pandas as pd
 
-router = APIRouter(prefix="/align", tags=["align"])
+from backend.services import csv_utils
+from backend.services.align_data_service import align_spectral_centroid, align_powercurve
 
-TEMP = "temp_align"
-os.makedirs(TEMP, exist_ok=True)
+router = APIRouter(prefix="/align", tags=["Align Data"])
+templates = Jinja2Templates(directory="backend/templates")
 
+
+# ---------------------------
+# GET main UI page
+# ---------------------------
 @router.get("")
-def page(request: Request):
-    return templates.TemplateResponse("align_data.html",
-                                      {"request": request, "title": "Align Data", "result_ready": False})
+def align_page(request: Request):
+    return templates.TemplateResponse("align_data.html", {"request": request})
 
-@router.post("")
-async def process(
-    request: Request,
-    base: UploadFile,
-    plugin: UploadFile,
-    plugin_type: str = Form(...),
-    agg: str = Form("mean"),
-    filename: str = Form(...)
+
+# ---------------------------
+# Preview CSV (single endpoint)
+# ---------------------------
+@router.post("/preview_csv")
+async def preview_csv(file: UploadFile, has_header: bool = Form(True)):
+    content = await file.read()
+    token = csv_utils.store_temp_csv(content)
+
+    if has_header:
+        df = pd.read_csv(BytesIO(content), header=0)
+    else:
+        df = pd.read_csv(BytesIO(content), header=None, names=["time", "value"])
+
+    html = df.head(10).to_html(classes="preview-table", index=False, escape=True)
+    return JSONResponse({"html": html, "token": token})
+
+
+@router.post("/preview_temp_csv")
+async def preview_temp_csv(token: str = Form(...)):
+    content = csv_utils.load_temp_csv(token)
+    df = pd.read_csv(BytesIO(content))
+    df.columns = [str(c).lower() for c in df.columns]
+    html = df.head(10).to_html(classes="preview-table", index=False, escape=True)
+    return JSONResponse({"html": html})
+
+
+# ---------------------------
+# Apply Spectral Centroid Alignment
+# ---------------------------
+@router.post("/apply_spectral_centroid")
+async def apply_spectral_centroid(
+    base_token: str = Form(...),
+    sc_token: str = Form(...)
 ):
-    filename = sanitize_filename(filename, default="combined.csv")
-    base = ensure_extension(base, (".csv",))
-    plugin = ensure_extension(plugin, (".csv",))
-    base_bytes = await base.read()
-    plugin_bytes = await plugin.read()
+    # Load tokened CSVs (including previously added columns)
+    base_content = csv_utils.load_temp_csv(base_token)
+    sc_content = csv_utils.load_temp_csv(sc_token)
 
-    out_path = store_file(TEMP, ".csv")
-    align_data(base_bytes, plugin_bytes, plugin_type, agg, out_path)
+    base_df = pd.read_csv(BytesIO(base_content), dtype=str)
+    sc_df = pd.read_csv(BytesIO(sc_content), dtype=str)
 
-    token = os.path.basename(out_path)
-    return templates.TemplateResponse("align_data.html",
-                                      {"request": request, "title": "Align Data",
-                                       "result_ready": True, "token": token})
+    base_df.columns = [c.lower() for c in base_df.columns]
+    sc_df.columns = ['time', 'value']
 
+    # Determine base time column
+    base_time_col = 'time' if 'time' in base_df.columns else 'measure.beat'
+
+    base_df[base_time_col] = pd.to_numeric(base_df[base_time_col], errors='coerce')
+    sc_df['time'] = pd.to_numeric(sc_df['time'], errors='coerce')
+    sc_df['value'] = pd.to_numeric(sc_df['value'], errors='coerce')
+
+    result_df = align_spectral_centroid(base_df.rename(columns={base_time_col: 'time'}), sc_df)
+
+    result_token = csv_utils.store_temp_csv(result_df.to_csv(index=False).encode("utf-8"))
+    return JSONResponse({"token": result_token})
+
+
+# ---------------------------
+# Apply Powercurve Alignment
+# ---------------------------
+@router.post("/apply_powercurve")
+async def apply_powercurve(
+    base_token: str = Form(...),
+    power_token: str = Form(...),
+    mf_ref: float = Form(...)
+):
+    base_content = csv_utils.load_temp_csv(base_token)
+    power_content = csv_utils.load_temp_csv(power_token)
+
+    base_df = pd.read_csv(BytesIO(base_content), dtype=str)
+    power_df = pd.read_csv(BytesIO(power_content), dtype=str)
+
+    base_df.columns = [c.lower() for c in base_df.columns]
+    power_df.columns = ['time', 'value']
+
+    base_time_col = 'time' if 'time' in base_df.columns else 'measure.beat'
+
+    base_df[base_time_col] = pd.to_numeric(base_df[base_time_col], errors='coerce')
+    power_df['time'] = pd.to_numeric(power_df['time'], errors='coerce')
+    power_df['value'] = pd.to_numeric(power_df['value'], errors='coerce')
+
+    result_df = align_powercurve(
+        base_df.rename(columns={base_time_col: 'time'}),
+        power_df,
+        mf_ref
+    )
+
+    result_token = csv_utils.store_temp_csv(result_df.to_csv(index=False).encode("utf-8"))
+    return JSONResponse({"token": result_token})
+
+
+# ---------------------------
+# Download final CSV
+# ---------------------------
 @router.get("/download/{token}")
-def download(token: str):
-    path = os.path.join(TEMP, token)
-    return FileResponse(path, filename="combined.csv")
-
+def download_result(token: str):
+    path = os.path.join(csv_utils.TEMP_DIR, token)
+    return FileResponse(path, filename="aligned.csv")
