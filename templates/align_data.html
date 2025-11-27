@@ -2,9 +2,11 @@
 {% block content %}
 
 {{ page_header(
-    "Correct measure.beat and tempo (bpm) column",
-    "This tool corrects the columns that are created when exporting the time instants layer from Sonic Visualiser. You may move and reorder columns if necessary. It also creates a tempo (bpm) column if desired.",
-    "Your CSV table must contain two columns: label/measure.beat and time values in seconds."
+    "Align & map Sonic Visualiser plugin data with measure/beat markings",
+    "This tool enables you to aggregate your dynamics and spectral centroid data from Sonic Visualiser and map it onto the according measure/beat markings. It creates new columns in the base CSV table 
+    into which the aggregated and mapped data is inserted. Central Spectroid creates one new values column, PowerCurve creates two: raw values (dBFS) and interpreted dynamics, the latter of which you may calibrate as required.",
+    "Your base CSV should contain at least two columns: label/measure.beat and time values in seconds (importantly: in this order), it may already additionally contain a tempo (bpm) column. Your plugin data files should contain exactly 
+    two columns: time (seconds) and values (powercurve or spectral centroid), also in this order. If your plugin data tables have text headers, you may check the according toggles; if not, the tool will create appropriate headers."
 ) }}
 
 <form id="align-form">
@@ -47,117 +49,9 @@
     <div id="download-container"></div>
 </form>
 
-<script src="/static/csv_preview.js"></script>
+{% endblock %}
 
-<script>
-let CURRENT_TOKEN = null;
-
-// CSV previews
-initCsvPreview({
-    inputId:"base-upload",
-    previewContainerId:"base-preview",
-    previewEndpoint:"/align/preview_csv",
-    onTokenReady:t=>document.getElementById("base-token").value=t
-});
-
-initCsvPreview({
-    inputId:"sc-upload",
-    previewContainerId:"sc-preview",
-    previewEndpoint:"/align/preview_csv",
-    onTokenReady:t=>document.getElementById("sc-token").value=t,
-    hasHeaderId:"sc-has-header"
-});
-
-initCsvPreview({
-    inputId:"power-upload",
-    previewContainerId:"power-preview",
-    previewEndpoint:"/align/preview_csv",
-    onTokenReady:t=>document.getElementById("power-token").value=t,
-    hasHeaderId:"power-has-header"
-});
-
-// Collapsible tool panel controller
-document.addEventListener("DOMContentLoaded", () => {
-    const panelButtons = document.querySelectorAll("#tool-buttons button");
-    let activeTool = null;
-
-    panelButtons.forEach(btn => {
-        btn.addEventListener("click", () => {
-            const toolId = btn.dataset.tool;
-            const panel = document.getElementById(toolId);
-
-            if (activeTool === toolId) {
-                panel.classList.remove("visible");
-                activeTool = null;
-                return;
-            }
-
-            // Hide all panels first
-            document.querySelectorAll(".tool-panel").forEach(p => p.classList.remove("visible"));
-
-            panel.classList.add("visible");
-            activeTool = toolId;
-        });
-    });
-});
-
-// Apply functions
-document.getElementById("apply_centroid").addEventListener("click", async () => {
-    const baseToken = document.getElementById("base-token").value;
-    const scToken = document.getElementById("sc-token").value;
-    if (!baseToken || !scToken) return alert("Please upload both CSVs");
-
-    const form = new FormData();
-    form.append("base_token", baseToken);
-    form.append("sc_token", scToken);
-
-    const r = await fetch("/align/apply_spectral_centroid", { method: "POST", body: form });
-    const data = await r.json();
-
-    // Update base-token so next tool uses augmented CSV
-    document.getElementById("base-token").value = data.token;
-
-    const previewForm = new FormData();
-    previewForm.append("token", data.token);
-    const previewResp = await fetch("/align/preview_temp_csv", { method: "POST", body: previewForm });
-    const previewData = await previewResp.json();
-    document.getElementById("base-preview").innerHTML = previewData.html;
-
-    // Show download button immediately (filename fixed, no dynamic update)
-    document.getElementById("download-container").innerHTML =
-        `<a href="/align/download/${data.token}" download="aligned.csv">
-            <button type="button">Download file</button>
-        </a>`;
-});
-
-document.getElementById("apply_powercurve").addEventListener("click", async () => {
-    const baseToken = document.getElementById("base-token").value;
-    const powerToken = document.getElementById("power-token").value;
-    if (!baseToken || !powerToken) return alert("Please upload both CSVs");
-
-    const form = new FormData();
-    form.append("base_token", baseToken);
-    form.append("power_token", powerToken);
-    form.append("mf_ref", document.getElementById("mf_ref").value);
-
-    const r = await fetch("/align/apply_powercurve", { method: "POST", body: form });
-    const data = await r.json();
-
-    // Update base-token so next tool uses augmented CSV
-    document.getElementById("base-token").value = data.token;
-
-    const previewForm = new FormData();
-    previewForm.append("token", data.token);
-    const previewResp = await fetch("/align/preview_temp_csv", { method: "POST", body: previewForm });
-    const previewData = await previewResp.json();
-    document.getElementById("base-preview").innerHTML = previewData.html;
-
-    // Show download button immediately (filename fixed)
-    document.getElementById("download-container").innerHTML =
-        `<a href="/align/download/${data.token}" download="aligned.csv">
-            <button type="button">Download file</button>
-        </a>`;
-});
-</script>
-
+{% block scripts %}
+<script src="{{ url_for('static', path='scripts/csv_preview.js') }}"></script>
+<script src="{{ url_for('static', path='scripts/pages/align_data.js') }}"></script>
 {% endblock %}
