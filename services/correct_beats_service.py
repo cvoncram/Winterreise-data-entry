@@ -3,37 +3,19 @@ import numpy as np
 from io import BytesIO
 from backend.services.csv_utils import read_csv_upload
 
-def find_col_ci(df, name):
-    """Case-insensitive column lookup"""
-    lower = [c.lower() for c in df.columns]
-    try:
-        return df.columns[lower.index(name.lower())]
-    except ValueError:
-        return None
-    
-
 def _build_measurebeat_list_for_nrows(n_rows: int, bpm: int, anacrusis_value: float) -> list:
-    """
-    Build measure.beat strings for n_rows according to the anacrusis rules:
-    - if frac == 0 and k>0 -> prepend 0.1 .. 0.k
-    - if frac > 0 -> prepend '0' and then (if k>0) 0.1 .. 0.k
-    then continue with regular beats 1.1,1.2.. up to bpm, 2.1...
-    """
     k = int(np.floor(anacrusis_value))
     frac = float(anacrusis_value) - k
 
     prepended = []
 
-    # if there is a fractional part, always add a single '0'
     if frac > 0:
         prepended.append("0")
 
-    # if there is an integer part, append 0.1 ... 0.k
     if k > 0:
         for b in range(1, k + 1):
             prepended.append(f"0.{b}")
 
-    # Now generate regular beats until we have enough rows
     needed = max(0, n_rows - len(prepended))
     regular = []
     current_measure = 1
@@ -45,21 +27,13 @@ def _build_measurebeat_list_for_nrows(n_rows: int, bpm: int, anacrusis_value: fl
             current_measure += 1
             current_beat = 1
 
-    # concat and ensure length n_rows (trim if prepended longer than n_rows)
     combined = (prepended + regular)[:n_rows]
     return combined
 
 def process_csv(content, bpm, anacrusis_value, has_anacrusis, output_path):
-    """
-    Existing full-file processing: read CSV, compute measure.beat and tempo and write output_path.
-    Uses read_csv_upload (which ensures headers/lowercase).
-    """
     df = read_csv_upload(content)
-
-    # keep headers lowercase for consistency
     df.columns = [c.lower() for c in df.columns]
 
-    # find time column (case-insensitive)
     time_col = None
     for c in df.columns:
         if c.lower() == "time":
@@ -71,15 +45,12 @@ def process_csv(content, bpm, anacrusis_value, has_anacrusis, output_path):
     n_rows = len(df)
     A = float(anacrusis_value) if has_anacrusis else 0.0
 
-    # Build measure.beat column using helper
     mb = _build_measurebeat_list_for_nrows(n_rows, int(bpm), float(A))
     df["measure.beat"] = mb
 
-    # move measure.beat to left
     cols = ["measure.beat"] + [c for c in df.columns if c != "measure.beat"]
     df = df[cols]
 
-    # compute tempo (bpm) from time column
     times = pd.to_numeric(df[time_col], errors="coerce").to_numpy()
     tempo_vals = np.full(len(times), np.nan)
     valid = ~np.isnan(times)
@@ -93,21 +64,12 @@ def process_csv(content, bpm, anacrusis_value, has_anacrusis, output_path):
     df.to_csv(output_path, index=False)
 
 def recalc_measure_beat(csv_path: str, bpm: int, anacrusis_value: float):
-    """
-    Recalculate the measure.beat column for an already-stored CSV on disk.
-    Uses the exact same rules as process_csv to be consistent.
-    """
     df = pd.read_csv(csv_path)
-
     n_rows = len(df)
     mb = _build_measurebeat_list_for_nrows(n_rows, int(bpm), float(anacrusis_value))
-
     df["measure.beat"] = mb
-
-    # move measure.beat to left
     cols = ["measure.beat"] + [c for c in df.columns if c != "measure.beat"]
     df = df[cols]
-
     df.to_csv(csv_path, index=False)
 
 def add_tempo_column_inplace(csv_path: str):
@@ -129,3 +91,59 @@ def add_tempo_column_inplace(csv_path: str):
             tempo_vals[i] = 60.0 / (times[i+1]-times[i])
     df["tempo (bpm)"] = tempo_vals
     df.to_csv(csv_path, index=False)
+
+
+# ===============================
+# New function for CSV preview preprocessing
+# ===============================
+def preprocess_csv_for_preview(content: bytes) -> pd.DataFrame:
+    """
+    Preprocess CSV specifically for the Correct Beats page preview.
+    - Checks if first row has text headers
+    - Assigns 'measure.beat' and 'time' columns
+    - Moves columns appropriately
+    - Lowercases all headers
+    """
+    df = pd.read_csv(BytesIO(content), dtype=str, header=None)
+    first_row = df.iloc[0]
+
+    # Detect if first row has non-numeric values
+    numeric_count = sum(pd.to_numeric(first_row, errors='coerce').notna())
+    n_cols = len(df.columns)
+    df_processed = None
+
+    if numeric_count < n_cols / 2:
+        # First row has text headers
+        headers = [str(c).lower() for c in first_row]
+        df_processed = df[1:].copy()
+        df_processed.columns = headers
+
+        # Identify TIME column (case-insensitive)
+        time_col = next((c for c in headers if "time" in c.lower()), None)
+        # Rename the other column to 'measure.beat' by default
+        other_cols = [c for c in headers if c != time_col]
+        for c in other_cols:
+            df_processed = df_processed.rename(columns={c: "measure.beat"})
+
+        # Reorder columns: measure.beat left, time right
+        cols_order = ["measure.beat"]
+        if time_col:
+            cols_order.append(time_col)
+        df_processed = df_processed[cols_order]
+
+    else:
+        # First row mostly numeric → pick column with longer number as 'time'
+        first_values = pd.to_numeric(first_row, errors='coerce')
+        col_lengths = [len(str(v)) for v in first_values]
+        time_idx = col_lengths.index(max(col_lengths))
+        other_idx = 1 - time_idx if n_cols == 2 else [i for i in range(n_cols) if i != time_idx][0]
+
+        data = df.copy()
+        data.columns = [f"col{i}" for i in range(n_cols)]
+        df_processed = data.copy()
+        df_processed.columns = [f"measure.beat" if i == other_idx else "time" if i == time_idx else f"col{i}" for i in range(n_cols)]
+        # Move measure.beat left, time right
+        cols_order = ["measure.beat", "time"] + [c for c in df_processed.columns if c not in ("measure.beat","time")]
+        df_processed = df_processed[cols_order]
+
+    return df_processed

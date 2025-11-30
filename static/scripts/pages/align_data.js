@@ -58,43 +58,19 @@ document.addEventListener("DOMContentLoaded", () => {
 // -------------------------------
 // Apply Functions
 // -------------------------------
-async function applyTool(formDataEndpoint, previewEndpoint, formDataPairs, tokenInputId) {
-    const form = new FormData();
-    for (const [key, value] of Object.entries(formDataPairs)) {
-        form.append(key, value);
-    }
-
-    const r = await fetch(formDataEndpoint, { method: "POST", body: form });
-    const data = await r.json();
-    if (!data.error) {
-        // Update base token for next tool
-        document.getElementById(tokenInputId).value = data.token;
-
-        // Update preview
-        const previewForm = new FormData();
-        previewForm.append("token", data.token);
-        const previewResp = await fetch(previewEndpoint, { method: "POST", body: previewForm });
-        const previewData = await previewResp.json();
-        document.getElementById("base-preview").innerHTML = previewData.html;
-
-        // Show download button
-        document.getElementById("download-container").innerHTML =
-            `<a href="/align/download/${data.token}" download="aligned.csv">
-                <button type="button">Download file</button>
-            </a>`;
-    }
-}
-
 document.getElementById("apply_centroid").addEventListener("click", () => {
     const baseToken = document.getElementById("base-token").value;
     const scToken = document.getElementById("sc-token").value;
     if (!baseToken || !scToken) return alert("Please upload both CSVs");
 
-    applyTool(
+    applyFormAction(
+        { base_token: baseToken, sc_token: scToken },
         "/align/apply_spectral_centroid",
         "/align/preview_temp_csv",
-        { base_token: baseToken, sc_token: scToken },
-        "base-token"
+        "base-preview",
+        "base-token",
+        "/align/download",
+        "aligned.csv"
     );
 });
 
@@ -103,10 +79,13 @@ document.getElementById("apply_powercurve").addEventListener("click", () => {
     const powerToken = document.getElementById("power-token").value;
     if (!baseToken || !powerToken) return alert("Please upload both CSVs");
 
-    applyTool(
+    applyFormAction(
+        { base_token: baseToken, power_token: powerToken, mf_ref: document.getElementById("mf_ref").value },
         "/align/apply_powercurve",
         "/align/preview_temp_csv",
-        { base_token: baseToken, power_token: powerToken, mf_ref: document.getElementById("mf_ref").value },
-        "base-token"
+        "base-preview",
+        "base-token",
+        "/align/download",
+        "aligned.csv"
     );
 });

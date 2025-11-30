@@ -62,39 +62,24 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // -------------------------------
-// Helper: Show Download Button
-// -------------------------------
-function showDownloadButton(token) {
-    const container = document.getElementById("download-container");
-    container.innerHTML = `
-        <a href="/correct/download/${token}" download="corrected.csv">
-            <button type="button">Download file</button>
-        </a>`;
-}
-
-// -------------------------------
 // Apply Actions (Rename / Beats / Tempo)
 // -------------------------------
-document.addEventListener("click", async (e) => {
-
+document.addEventListener("click", (e) => {
     // ----- Rename -----
     if (e.target.matches("#apply_rename")) {
         const oldName = document.getElementById("rename_old").value.trim();
         const newName = document.getElementById("rename_new").value.trim();
         const moveLeft = document.getElementById("rename_move_left").checked;
 
-        const form = new FormData();
-        form.append("token", CURRENT_TOKEN);
-        form.append("old", oldName);
-        form.append("new", newName);
-        form.append("move_left", moveLeft ? "1" : "0");
-
-        const r = await fetch("/correct/rename", { method: "POST", body: form });
-        const data = await r.json();
-        if (!data.error) {
-            document.getElementById("csv-preview").innerHTML = data.html;
-            showDownloadButton(CURRENT_TOKEN);
-        }
+        applyFormAction(
+            { token: CURRENT_TOKEN, old: oldName, new: newName, move_left: moveLeft ? "1" : "0" },
+            "/correct/rename",
+            "/correct/preview_temp_csv",
+            "csv-preview",
+            null,
+            "/correct/download",
+            "corrected.csv"
+        );
     }
 
     // ----- Beats -----
@@ -103,31 +88,28 @@ document.addEventListener("click", async (e) => {
         const hasAna = document.getElementById("beats_has_ana").checked;
         const anaVal = hasAna ? document.querySelector("#beats_ana-wrapper input").value : 0;
 
-        const form = new FormData();
-        form.append("token", CURRENT_TOKEN);
-        form.append("bpm", bpm);
-        form.append("has_anacrusis", hasAna ? "1" : "0");
-        form.append("anacrusis", anaVal);
+        applyFormAction(
+            { token: CURRENT_TOKEN, bpm, has_anacrusis: hasAna ? "1" : "0", anacrusis: anaVal },
+            "/correct/beats",
+            "/correct/preview_temp_csv",
+            "csv-preview",
+            null,
+            "/correct/download",
+            "corrected.csv"
 
-        const r = await fetch("/correct/beats", { method: "POST", body: form });
-        const data = await r.json();
-        if (!data.error) {
-            document.getElementById("csv-preview").innerHTML = data.html;
-            showDownloadButton(CURRENT_TOKEN);
-        }
+        );
     }
 
     // ----- Tempo -----
     if (e.target.matches("#apply_tempo")) {
-        const form = new FormData();
-        form.append("token", CURRENT_TOKEN);
-
-        const r = await fetch("/correct/tempo", { method: "POST", body: form });
-        const data = await r.json();
-        if (!data.error) {
-            document.getElementById("csv-preview").innerHTML = data.html;
-            showDownloadButton(CURRENT_TOKEN);
-        }
+        applyFormAction(
+            { token: CURRENT_TOKEN },
+            "/correct/tempo",
+            "/correct/preview_temp_csv",
+            "csv-preview",
+            null,
+            "/correct/download",
+            "corrected.csv"
+        );
     }
-
 });

@@ -1,11 +1,16 @@
+// ===============================
+//      MEI Preview Helper
+// ===============================
+
 // Renders MEI preview in boxes (first/last 10 measures)
 function renderMEIPreview(measures) {
     const container = document.getElementById("mei-preview");
     container.innerHTML = "<h4>Preview Measures</h4>";
     container.style.display = "block";
 
-    const section = (title, measuresSubset) => {
+    const section = (title, subset) => {
         const secDiv = document.createElement("div");
+
         const h5 = document.createElement("h5");
         h5.textContent = title;
         secDiv.appendChild(h5);
@@ -15,7 +20,7 @@ function renderMEIPreview(measures) {
         flexContainer.style.flexWrap = "wrap";
         flexContainer.style.gap = "10px";
 
-        measuresSubset.forEach(m => {
+        subset.forEach(m => {
             const box = document.createElement("div");
             box.style.border = "1px solid #385170";
             box.style.padding = "10px";
@@ -35,6 +40,6 @@ function renderMEIPreview(measures) {
         return secDiv;
     };
 
-    container.appendChild(section("First 10 Measures", measures.slice(0,10)));
+    container.appendChild(section("First 10 Measures", measures.slice(0, 10)));
     container.appendChild(section("Last 10 Measures", measures.slice(-10)));
 }

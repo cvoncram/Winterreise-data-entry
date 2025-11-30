@@ -4,8 +4,8 @@ import uuid
 import os
 
 # Temp folder for preview CSVs
-TEMP_DIR = "temp_csv"
-os.makedirs(TEMP_DIR, exist_ok=True)
+DEFAULT_TEMP_DIR = "temp_csv"
+os.makedirs(DEFAULT_TEMP_DIR, exist_ok=True)
 
 def read_csv_upload(content: bytes) -> pd.DataFrame:
     """
@@ -26,25 +26,40 @@ def preview_csv(content: bytes, n: int = 10, has_header: bool = True) -> str:
     return df.head(n).to_html(classes="preview-table", index=False, escape=True)
 
 
-def store_temp_csv(content: bytes, suffix=".csv") -> str:
-    token = f"{uuid.uuid4()}{suffix}"
-    path = os.path.join(TEMP_DIR, token)
+def store_temp_csv(content: bytes, temp_dir: str = DEFAULT_TEMP_DIR):
+    token = str(uuid.uuid4()) + ".csv"
+    os.makedirs(temp_dir, exist_ok=True)
+    path = os.path.join(temp_dir, token)
     with open(path, "wb") as f:
         f.write(content)
     return token
 
-def load_temp_csv(token: str) -> bytes:
-    path = os.path.join(TEMP_DIR, token)
+
+def load_temp_csv(token: str, temp_dir: str = DEFAULT_TEMP_DIR):
+    path = os.path.join(temp_dir, token)
     with open(path, "rb") as f:
         return f.read()
 
-def apply_csv_operation(token: str, operation) -> None:
-    path = os.path.join(TEMP_DIR, token)
+
+def apply_csv_operation(token: str, operation, temp_dir: str = DEFAULT_TEMP_DIR) -> None:
+    """
+    Apply an arbitrary lambda/func to the DataFrame and rewrite file in place.
+    """
+    path = os.path.join(temp_dir, token)
     df = pd.read_csv(path, dtype=str)
     df = operation(df)
     df.to_csv(path, index=False)
 
-def rename_column_inplace(csv_path: str, old: str, new: str, move_to_left: bool = True):
+
+def rename_column_inplace(csv_path: str, old: str, new: str,
+                          move_to_left: bool = True,
+                          temp_dir: str = DEFAULT_TEMP_DIR):
+    """
+    Renames a column and optionally moves it to first position.
+    """
+    if not csv_path.startswith(temp_dir):
+        csv_path = os.path.join(temp_dir, csv_path)
+
     df = pd.read_csv(csv_path, dtype=str, header=None)
     df = ensure_headers(df)
 
@@ -62,6 +77,7 @@ def rename_column_inplace(csv_path: str, old: str, new: str, move_to_left: bool 
         df = df[cols]
 
     df.to_csv(csv_path, index=False)
+
 
 def ensure_headers(df: pd.DataFrame) -> pd.DataFrame:
     """

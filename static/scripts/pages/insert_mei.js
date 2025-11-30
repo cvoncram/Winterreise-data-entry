@@ -77,10 +77,8 @@ document.getElementById("process-mei").addEventListener("click", async () => {
     const r = await fetch("/insert-mei/process", { method: "POST", body: form });
     const data = await r.json();
 
-    // Render MEI preview
     renderMEIPreview(data.preview_measures);
 
-    // Show download button
     document.getElementById("download-container").innerHTML =
         `<a href="/insert-mei/download/${data.token}" download="modified.mei">
             <button type="button">Download MEI</button>
