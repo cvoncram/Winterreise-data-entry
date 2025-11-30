@@ -1,31 +1,60 @@
 /* -------------------- */
+/*  Shared visual tokens */
+/* -------------------- */
+
+:root {
+    --color-1: #fdfbda;
+    --color-2: #d3d0a8;
+    --color-3: #819f7f;
+    --color-4: #2d4659;
+
+    /* existing tokens mapped to the four colors */
+    --bg: var(--color-2);
+    --fg: var(--color-3);
+    --hover-bg: var(--color-4);
+    --hover-fg: var(--color-1);
+    --page-bg: var(--color-1);
+    --page-fg: var(--color-4);
+
+    --radius: 8px;
+    --padding: 12px 16px;
+}
+
+/* utility color classes (unchanged) */
+.first-color { background: var(--color-1); }
+.second-color { background: var(--color-2); }
+.third-color { background: var(--color-3); }
+.fourth-color { background: var(--color-4); }
+
+
+/* -------------------- */
 /*        Body          */
 /* -------------------- */
 body {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #fcf4d9; /* was #ececec */
-    color: #d55b3e; /* was #142d4c */
+    background-color: var(--page-bg);
+    color: var(--page-fg);
 }
 
 /* -------------------- */
 /*       Top Navigation */
 /* -------------------- */
 .topnav {
-    background: #00aaa0; /* was #385170 */
+    background: var(--fg);
     padding: 12px;
     text-align: center;
 }
 
 .topnav a {
-    color: #fcf4d9; /* was #ececec */
+    color: var(--color-1);
     margin-right: 25px;
     text-decoration: none;
 }
 
 .topnav a:hover {
-    background-color: #d55b3e; /* was #142d4c */
+    background-color: var(--hover-bg);
     border-radius: 6px;
 }
 
@@ -50,21 +79,7 @@ body {
 .form-row label {
     margin-bottom: 6px;
     font-weight: bold;
-    color: #00aaa0; /* was #385170 */
-}
-
-/* -------------------- */
-/* Shared visual tokens */
-/* -------------------- */
-:root {
-    --bg: #8ed2c9; /* was #9fd3c7 */
-    --fg: #00aaa0; /* was #385170 */
-    --hover-bg: #d55b3e; /* was #142d4c */
-    --hover-fg: #fcf4d9; /* was #ececec */
-    --page-bg: #fcf4d9; /* was #ececec */
-    --page-fg: #d55b3e; /* was #142d4c */
-    --radius: 8px;
-    --padding: 12px 16px;
+    color: var(--fg);
 }
 
 /* -------------------- */
@@ -111,12 +126,13 @@ textarea:focus,
 select:focus,
 .form-control:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(0,170,160,0.12); /* was rgba(56,81,112,0.12) */
+    box-shadow: 0 0 0 3px rgba(56,81,112,0.12);
 }
 
 /* -------------------- */
 /* File input (custom) */
 /* -------------------- */
+
 .file-input-hidden {
     position: absolute;
     opacity: 0;
@@ -174,7 +190,7 @@ select:focus,
 .toggle-switch {
     width: 46px;
     height: 24px;
-    background-color: #00aaa0; /* was #385170 */
+    background-color: var(--fg);
     border-radius: 12px;
     position: relative;
     transition: background-color 0.18s ease;
@@ -184,7 +200,7 @@ select:focus,
     content: "";
     width: 18px;
     height: 18px;
-    background-color: #fcf4d9; /* was #ececec */
+    background-color: var(--color-1);
     border-radius: 50%;
     position: absolute;
     top: 3px;
@@ -193,12 +209,12 @@ select:focus,
 }
 
 .toggle-checkbox:checked + .toggle-switch {
-    background-color: #fcf4d9; /* was #ececec */
+    background-color: var(--color-1);
 }
 
 .toggle-checkbox:checked + .toggle-switch::before {
     transform: translateX(22px);
-    background-color: #d55b3e; /* was #142d4c */
+    background-color: var(--hover-bg);
 }
 
 /* -------------------- */
@@ -226,7 +242,7 @@ select:focus,
     border-radius: var(--radius);
     display: none;
     padding: 4px 0;
-    box-shadow: 0 6px 18px rgba(213,91,62,0.08); /* was rgba(20,45,76,0.08) */
+    box-shadow: 0 6px 18px rgba(20,45,76,0.08);
     z-index: 100;
 }
 
@@ -243,24 +259,17 @@ select:focus,
 /*---------------------*/
 /* Custom page header  */
 /*---------------------*/
+
 .page-header {
-    color: #d55b3e; /* was #142d4c */
-    max-width: 120%;
+    color: var(--page-fg);
     border-radius: 6px;
     padding: 15px;
-    page-orientation: center;
-    border: 2px solid #00aaa0; /* was #385170 */
-    margin-left: -20px;
-    margin-right: -20px;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    border: 2px solid var(--fg);
+    margin: 15px -20px;
 }
 
 .page-header h2 {
-    margin-top: 5px;
-    margin-bottom: 20px;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin: 5px 10px 20px;
 }
 
 .page-header h4,
@@ -361,7 +370,7 @@ form > * {
 .tool-panel button,
 .tool-panel input,
 .tool-panel .custom-select-wrapper .custom-select-options,
-.tool-panel .custom-select-wrapper .custom-select-display, 
+.tool-panel .custom-select-wrapper .custom-select-display,
 .tool-panel .file-wrapper .custom-file-button {
     border: 1px solid var(--fg);
 }
