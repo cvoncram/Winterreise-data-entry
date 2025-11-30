@@ -3,7 +3,7 @@
 # Exit immediately if a command fails
 set -e
 
-# Move to the project root (apps/)
+# Move to the project root 
 cd "$(dirname "$0")/.." || exit 1
 
 # Activate the virtual environment
