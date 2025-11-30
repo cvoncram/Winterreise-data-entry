@@ -22,11 +22,15 @@ Python 3.12.3 and pip 24.0 or higher are required.
 ### Installation (in command line)
 
 ```bash
-mkdir Winterreise_app #create a new folder in which to place the app folder
+mkdir Winterreise_app && cd Winterreise_app #create a new folder in which to place the app folder, move there
 git clone git@github.com:cvoncram/Winterreise-data-entry-backend.git
-python -m venv .venv #or python3, create virtual python environment 
+mv Winterreise-data-entry-backend backend #rename folder to make sure references stay valid
+```
+
+```bash
+python3 -m venv .venv #create virtual python environment 
 source .venv/bin/activate #activate virtual environment
-pip install -r Winterreise-data-entry-backend/requirements.txt #install additional requirements
+pip install -r backend/requirements.txt #install additional requirements
 deactivate #deactivate virtual environment
 ```
 You will be able to start the application by clicking on the start_app.sh script.
@@ -44,3 +48,7 @@ You will be able to start the application by clicking on the start_app.sh script
 ---
 
 This page and these tools were created by Clemens von Cramon as part of the project Creating Schubert’s „Die Winterreise“ in Performance with Dietrich Fischer-Dieskau.
+
+
+
+git add -u && git commit -m "update to README install instructions"
