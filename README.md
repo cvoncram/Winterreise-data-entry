@@ -48,7 +48,3 @@ You will be able to start the application by clicking on the start_app.sh script
 ---
 
 This page and these tools were created by Clemens von Cramon as part of the project Creating Schubert’s „Die Winterreise“ in Performance with Dietrich Fischer-Dieskau.
-
-
-
-git add -u && git commit -m "update to README install instructions"
