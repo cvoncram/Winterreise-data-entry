@@ -1,0 +1,99 @@
+{% extends "tool.html" %}
+
+{% block content %}
+
+{% set desc %}
+This tool decompresses a Sonic Visualiser Session file to extract the measure/beat, spectral centroid, and powercurve layers from the decompressed 
+XML file. You may verify from the previews that the layers have been correctly identified and change the mapping if necessary. The data from
+these layers is then aggregated and mapped onto the tempo, dynam, and annot (spectral centroid) elements in an MEI-XML file
+(which you can <a href="/generate-mei">generate with the MEI-XML generator tool</a>).
+{% endset %}
+
+{{ page_header(
+    "SV → MEI Conversion Tool",
+    desc | safe,
+    "Upload a Sonic Visualiser Session file (.sv) and an MEI-XML file. Ideally, your .sv file should only contain these three layers to avoid any confusion. 
+    It is not possible to change the name of the downloaded file, this will always be the same as the uploaded MEI-XML file."
+) }}
+
+
+<form id="sv-to-mei-form" method="post" enctype="multipart/form-data">
+
+    {{ file_input("sv_file", "sv_file", "Sonic Visualiser (.sv) file") }}
+
+    <!-- Layer preview appears after SV upload -->
+    <div id="layer-preview-panel" style="display:none; margin-top:1em;">
+
+        <div class="layer-row layer-block">
+            <div>
+                <pre id="preview-beat" class="preview-box"></pre>
+            </div>
+            <div class="dropdown-holder">
+                {{ custom_dropdown(
+                    "layer_beat",
+                    "Detected layer:",
+                    [("beat", "beat/measure"), ("spectral", "spectral centroid"), ("power", "powercurve")],
+                    "beat/measure"
+                ) }}
+            </div>
+        </div>
+
+        <div class="layer-row layer-block">
+            <div>
+                <pre id="preview-spectral" class="preview-box"></pre>
+            </div>
+            <div class="dropdown-holder">
+                {{ custom_dropdown(
+                    "layer_spectral",
+                    "Detected layer:",
+                    [("spectral", "spectral centroid"), ("beat", "beat/measure"), ("power", "powercurve")],
+                    "spectral centroid"
+                ) }}
+            </div>
+        </div>
+
+        <div class="layer-row layer-block">
+            <div>
+                <pre id="preview-power" class="preview-box"></pre>
+            </div>
+            <div class="dropdown-holder">
+                {{ custom_dropdown(
+                    "layer_power",
+                    "Detected layer:",
+                    [("power", "powercurve"), ("spectral", "spectral centroid"), ("beat", "beat/measure")],
+                    "powercurve"
+                ) }}
+            </div>
+        </div>
+
+    </div>
+
+    <hr>
+
+    {{ file_input("mei_file", "mei_file", "MEI file (.mei/.xml)") }}
+
+    {{ text_input("sample_rate", "sample_rate", "Sample rate", "44100") }}
+    {{ text_input("mf_db", "mf_db", "mf_db (dB threshold)", "-30.0") }}
+    {{ text_input("step_db", "step_db", "Dynamic step (dB)", "10.0") }}
+
+    <div class="form-row">
+        <button type="submit" class="btn btn-primary">Process</button>
+    </div>
+
+</form>
+
+<hr>
+
+<div id="preview-container"></div>
+
+<div id="download-panel" style="display:none; margin-top:1em;">
+    <button id="download-btn" class="btn btn-success">
+        Download MEI
+    </button>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='scripts/sv_to_mei.js') }}"></script>
+{% endblock %}

@@ -9,8 +9,18 @@ document.addEventListener("change", (event) => {
     if (event.target.matches(".file-input-hidden")) {
         const input = event.target;
         const nameSpan = document.getElementById(input.id + "-name");
+        const wrapper = input.closest(".file-wrapper"); // get the parent div
+
         if (nameSpan) {
             nameSpan.textContent = input.files[0]?.name || "No file chosen";
+        }
+
+        if (wrapper) {
+            if (input.files.length > 0) {
+                wrapper.classList.add("file-selected");
+            } else {
+                wrapper.classList.remove("file-selected");
+            }
         }
     }
 });
