@@ -2,7 +2,7 @@
 /*        Body          */
 /* -------------------- */
 body {
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Ubuntu, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #ececec;
@@ -34,7 +34,7 @@ body {
 /* -------------------- */
 .content {
     padding: 20px;
-    margin: 0 25%;
+    margin: 0 20%;
 }
 
 /* -------------------- */
@@ -128,6 +128,15 @@ select:focus,
     width: 100%;
     margin-bottom: 20px;
     
+}
+
+.file-wrapper.file-selected .custom-file-button {
+    background-color: #385170;
+}
+
+.file-wrapper.file-selected .custom-file-button .file-name,
+.file-wrapper.file-selected .custom-file-button .file-label-text {
+    color:#ececec;
 }
 
 .custom-file-button {
@@ -371,3 +380,52 @@ form > * {
     border: 1px solid var(--fg);
 }
 
+/* Dropdowns next to previews */
+
+/* -------------------- */
+/* Layer preview + dropdown styling */
+/* -------------------- */
+
+/* Container for each layer row */
+
+
+
+
+.layer-block {
+    display: flex;
+    gap: 1em; /* space between preview and dropdown */
+    align-items: flex-start;
+    margin-bottom: 1em;
+    width: 100%;
+    box-sizing: border-box;
+    max-width: 100%; /* ensures it stays within content area */
+}
+
+/* Preview <pre> box */
+.layer-block pre {
+    flex: 0 0 70%;       /* 70% width */
+    max-height: 200px;   /* same as inline style */
+    overflow: auto;      /* scroll if content exceeds height */
+    background: #9fd3c7; 
+    padding: 0.5em;
+    border: 1px solid #385170;
+    border-radius: var(--radius);
+    white-space: pre-wrap; /* wrap long lines */
+    word-break: break-word;
+    margin: 0;
+    color: #142d4c;           /* remove default margins */
+    box-sizing: border-box;
+}
+
+/* Dropdown container */
+.layer-block .dropdown-holder {
+    flex: 0 0 30%;      /* ~30% width */
+    max-width: 30%;
+    box-sizing: border-box;
+}
+
+.layer-block .dropdown-holder .custom-select-wrapper,
+.layer-block .dropdown-holder .custom-select-display {
+    max-width: 100%;
+    box-sizing: border-box;
+}
