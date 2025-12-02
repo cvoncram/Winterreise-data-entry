@@ -6,6 +6,7 @@ from fastapi.responses import JSONResponse, FileResponse
 from backend.dependencies import ensure_extension, store_file, TOKENS, sanitize_filename, templates
 from backend.services.sv_parser import parse_sv_bytes
 from backend.services.sv_mapper import generate_mei_from_sv, generate_layer_previews
+from backend.services.mei_preview import extract_preview_measures
 
 router = APIRouter(prefix="/sv-to-mei", tags=["sv-to-mei"])
 
@@ -72,10 +73,13 @@ async def process(
         "path": out_path,
         "preview": preview_measures,
         "warnings": warnings,
-        "original_name": mei_file.filename,  # <-- NEW
+        "original_name": mei_file.filename,
+        "mei_bytes": modified_mei_bytes,
     }
 
+
     return JSONResponse({"token": token, "warnings": warnings})
+
 
 @router.post("/preview")
 async def preview(token: str = Form(...)):
@@ -83,21 +87,13 @@ async def preview(token: str = Form(...)):
         raise HTTPException(status_code=404, detail="Token not found")
 
     info = TOKENS[token]
+    preview_measures = info.get("preview", [])
 
-    html = "<div class='preview-container has-data'>"
-    html += "<h4>Preview: First/Last measures</h4>"
+    return JSONResponse({
+        "measures": preview_measures,
+        "warnings": info.get("warnings", [])
+    })
 
-    for m in info["preview"]:
-        html += f"<pre>{m}</pre>"
-    html += "</div>"
-
-    if info.get("warnings"):
-        html += "<div class='tool-panel visible'><h4>Warnings</h4><ul>"
-        for w in info["warnings"]:
-            html += f"<li>{w}</li>"
-        html += "</ul></div>"
-
-    return JSONResponse({"html": html})
 
 @router.get("/download/{token}")
 async def download(token: str):

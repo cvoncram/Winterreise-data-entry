@@ -134,26 +134,52 @@ def generate_mei_from_sv(
         warnings.append(f"{num_beats} beats across {num_measures} measures (non-integer)")
     beats_per_measure = int(beats_per_measure)
 
-    tempos = [60.0 / ((beat_points[i][0] - beat_points[i-1][0]) / sample_rate) if i>0 else 0.0 for i in range(len(beat_points))]
-    beat_intervals = [(beat_points[i][0], beat_points[i+1][0] if i+1<len(beat_points) else beat_points[i][0]+1) for i in range(len(beat_points))]
+    # Calculate tempos per beat (copy last interval for final beat)
+    tempos = []
+    for i in range(len(beat_points)-1):
+        delta_sec = (beat_points[i+1][0] - beat_points[i][0]) / sample_rate
+        tempos.append(60.0 / delta_sec if delta_sec > 0 else 0.0)
+    tempos.append(tempos[-1] if tempos else 0.0)
 
-    def aggregate(points, start, end, mode='mean'):
-        vals = [v for f,v,_ in points if v is not None and start <= f < end]
+    # Beat intervals for aggregation (last beat copies previous interval)
+    beat_intervals = []
+    for i in range(len(beat_points)):
+        if i < len(beat_points)-1:
+            beat_intervals.append((beat_points[i][0], beat_points[i+1][0]))
+        elif i > 0:
+            prev_start, prev_end = beat_intervals[-1]
+            interval_len = prev_end - prev_start
+            beat_intervals.append((beat_points[i][0], beat_points[i][0] + interval_len))
+        else:
+            beat_intervals.append((beat_points[i][0], beat_points[i][0]+1))
+
+    def aggregate(points, start, end, mode='rms'):
+        vals = [v for f, v, _ in points if v is not None and start <= f < end]
         if not vals:
             return None
-        if mode=='mean':
+        if mode == 'mean':
             return float(np.mean(vals))
-        elif mode=='rms':
+        elif mode == 'rms':
             return float(np.sqrt(np.mean(np.square(vals))))
         return None
 
     # -----------------------
-    # Add annotations to MEI
+    # Helper: get or create MEI child
+    # -----------------------
+    def get_or_create_measure_child(parent, tag, tstamp):
+        child = parent.find(f".//mei:{tag}[@tstamp.ges='{tstamp}']", namespaces=ns)
+        if child is None:
+            child = etree.SubElement(parent, f"{{{ns['mei']}}}{tag}", **{'tstamp.ges': tstamp})
+        return child
+
+    # -----------------------
+    # Add/Update annotations to MEI
     # -----------------------
     for m_idx, measure in enumerate(measures):
         add_el = measure.find('mei:add', namespaces=ns)
         if add_el is None:
             add_el = etree.SubElement(measure, f"{{{ns['mei']}}}add")
+
         for b in range(beats_per_measure):
             idx = m_idx * beats_per_measure + b
             if idx >= len(beat_points):
@@ -161,25 +187,57 @@ def generate_mei_from_sv(
             start, end = beat_intervals[idx]
             tstamp = str(b+1)
 
-            etree.SubElement(add_el, f"{{{ns['mei']}}}tempo", **{'tstamp.ges': tstamp}, type='performed', mm=str(int(tempos[idx])))
+            # Tempo
+            tempo_el = get_or_create_measure_child(add_el, "tempo", tstamp)
+            tempo_el.set("mm", f"{tempos[idx]:.2f}")
+            tempo_el.set("type", "performed")
 
+            # Spectral centroid
             if spectral_points:
                 val = aggregate(spectral_points, start, end, mode='mean')
                 if val is not None:
-                    etree.SubElement(add_el, f"{{{ns['mei']}}}annot", **{'tstamp.ges': tstamp}, label='spectral centroid (Hz)', n=f"{val:.2f}", type='performed')
+                    annot_el = get_or_create_measure_child(add_el, "annot", tstamp)
+                    annot_el.set("label", "spectral centroid (Hz)")
+                    annot_el.set("n", f"{val:.2f}")
+                    annot_el.set("type", "performed")
 
+            # Dynamics
             if power_points:
-                val = aggregate(power_points, start, end, mode='rms')
-                if val is not None:
-                    step = round((val-mf_db)/step_db)
-                    n_val = f"mf{step:+}" if step!=0 else "mf"
-                    etree.SubElement(add_el, f"{{{ns['mei']}}}dynam", **{'tstamp.ges': tstamp}, n=n_val, type='performed')
+                vals = [v for f,v,_ in power_points if v is not None and start <= f < end]
+                if vals:
+                    # Convert from dBFS to linear amplitude
+                    lin_vals = [10**(v/20) for v in vals]
+                    # Compute RMS in linear domain
+                    rms_lin = np.sqrt(np.mean(np.square(lin_vals)))
+                    # Convert RMS back to dB
+                    val_db = 20 * np.log10(rms_lin)
+
+                    # Compute dynamic levels relative to mf
+                    dyn_levels = ['ppp','pp','p','mp','mf','f','ff','fff']
+                    mf_index = dyn_levels.index('mf')
+                    level_values = {lvl: mf_db + (i - mf_index) * step_db for i, lvl in enumerate(dyn_levels)}
+
+                    # Map value to dynamic
+                    if val_db < level_values['ppp'] or val_db > level_values['fff']:
+                        n_val = "extreme"
+                    else:
+                        closest_lvl, closest_val = min(level_values.items(), key=lambda x: abs(val_db - x[1]))
+                        diff = int(round(val_db - closest_val))
+                        if diff == 0:
+                            n_val = closest_lvl
+                        else:
+                            sign = "+" if diff > 0 else "-"
+                            n_val = f"{closest_lvl}{sign}{abs(diff)}"
+
+                    dynam_el = get_or_create_measure_child(add_el, "dynam", tstamp)
+                    dynam_el.set("n", n_val)
+                    dynam_el.set("type", "performed")
+
 
     # -----------------------
     # Build preview measures (namespace-stripped for display)
     # -----------------------
     def strip_ns(elem):
-        """Strip namespaces for preview only."""
         for e in elem.iter():
             if isinstance(e.tag, str) and '}' in e.tag:
                 e.tag = e.tag.split('}', 1)[1]

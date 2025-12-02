@@ -77,13 +77,36 @@ async function applyFormAction(
             // Update token input if provided
             if (tokenInputId) document.getElementById(tokenInputId).value = data.token;
 
-            // Update preview
+            // --------------------------
+            // Fetch MEI preview
+            // --------------------------
             if (previewEndpoint && previewContainerId) {
                 const previewForm = new FormData();
                 previewForm.append("token", data.token);
-                const previewResp = await fetch(previewEndpoint, { method: "POST", body: previewForm });
-                const previewData = await previewResp.json();
-                document.getElementById(previewContainerId).innerHTML = previewData.html;
+
+                try {
+                    const previewResp = await fetch(previewEndpoint, { method: "POST", body: previewForm });
+                    const previewData = await previewResp.json();
+
+                    // If MEI measures are returned, render preview
+                    if (previewData.measures && previewData.measures.length > 0) {
+                        renderMEIPreview(previewData.measures);
+                    } else {
+                        // fallback if no measures yet
+                        const container = document.getElementById(previewContainerId);
+                        container.innerHTML = "<p>No MEI preview available yet. Please process the SV file first.</p>";
+                        container.style.display = "block";
+                    }
+
+                    // Display any warnings
+                    if (previewData.warnings && previewData.warnings.length > 0) {
+                        const warningsContainer = document.getElementById("warnings");
+                        warningsContainer.innerHTML = "<ul>" + previewData.warnings.map(w => `<li>${w}</li>`).join("") + "</ul>";
+                        warningsContainer.style.display = "block";
+                    }
+                } catch (err) {
+                    console.error("Error fetching MEI preview:", err);
+                }
             }
 
             // Show download button if requested

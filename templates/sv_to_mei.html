@@ -12,8 +12,10 @@ these layers is then aggregated and mapped onto the tempo, dynam, and annot (spe
 {{ page_header(
     "SV → MEI Conversion Tool",
     desc | safe,
-    "Upload a Sonic Visualiser Session file (.sv) and an MEI-XML file. Ideally, your .sv file should only contain these three layers to avoid any confusion. 
-    It is not possible to change the name of the downloaded file, this will always be the same as the uploaded MEI-XML file."
+    "Upload a Sonic Visualiser Session file (.sv) and an MEI-XML file. Ideally, your .sv file should only contain these three layers to avoid any 
+    confusion when the app detects the different layers. It is not possible to change the name of the downloaded file, it will always correspond to the 
+    uploaded MEI-XML file. To facilitate the process, it is recommended to store the SV and MEI-XML files in the same folder, 
+    facilitating and expediting the process when working with larger numbers of files."
 ) }}
 
 
@@ -84,7 +86,7 @@ these layers is then aggregated and mapped onto the tempo, dynam, and annot (spe
 
 <hr>
 
-<div id="preview-container"></div>
+<div id="mei-preview"></div>
 
 <div id="download-panel" style="display:none; margin-top:1em;">
     <button id="download-btn" class="btn btn-success">
@@ -96,4 +98,5 @@ these layers is then aggregated and mapped onto the tempo, dynam, and annot (spe
 
 {% block scripts %}
 <script src="{{ url_for('static', path='scripts/sv_to_mei.js') }}"></script>
+<script src="{{ url_for('static', path='scripts/mei_preview.js') }}"></script>
 {% endblock %}
