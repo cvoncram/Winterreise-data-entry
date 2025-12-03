@@ -7,7 +7,7 @@ function renderMEIPreview(measures) {
     const container = document.getElementById("mei-preview");
     if (!container) return;
 
-    container.innerHTML = "<h4>Preview Measures</h4>";
+    container.innerHTML = "<h4>Preview Measures</h4><p>Please ignore the xmlns attribute inside <measure>, it will not appear in the finished file.</p>";
     container.style.display = "block";
 
     if (!measures || measures.length === 0) {
