@@ -367,27 +367,40 @@ def generate_mei_from_sv(
                 f"Your SV data leaves {empty_mei_beats} MEI beat{'s' if empty_mei_beats>1 else ''} empty at the end of the file."
             )
 
-
-
-    # -----------------------
-    # Preview (strip xmlns for display)
-    # -----------------------
     def strip_ns(elem):
+        """
+        Remove namespace prefixes from tags and remove namespace attributes
+        (including default xmlns) from `elem` and all its descendants.
+
+        - Operates *in-place* on the element provided (so deepcopy before calling).
+        - Returns the modified element.
+        """
         for e in elem.iter():
+            # 1) Remove namespace from tag (if present)
             if isinstance(e.tag, str) and '}' in e.tag:
                 e.tag = e.tag.split('}', 1)[1]
-        # remove namespace-declared attributes
-        for attr in list(elem.attrib):
-            if attr.startswith("{"):
-                elem.attrib.pop(attr)
-        # remove default xmlns on the element if present
-        if 'xmlns' in elem.attrib:
-            elem.attrib.pop('xmlns')
+
+            # 2) Collect namespaced attributes and the default 'xmlns' attr to remove
+            to_delete = []
+            for attr in list(e.attrib):
+                # attr may be like '{namespace}localname' for namespaced attributes
+                # or 'xmlns' for default namespace declaration
+                if attr == "xmlns" or attr.startswith("{") or attr.startswith("xmlns:"):
+                    to_delete.append(attr)
+
+            # 3) Remove them safely
+            for attr in to_delete:
+                e.attrib.pop(attr, None)
+
         return elem
 
     preview_measures = [
-        etree.tostring(strip_ns(deepcopy(m)), pretty_print=True, encoding=str)
-        for m in measures[:10] + measures[-10:]
+        etree.tostring(
+            strip_ns(deepcopy(m)),    # deepcopy so original tree is untouched
+            pretty_print=True,
+            encoding=str
+        )
+        for m in measures[:5] + measures[-5:]
     ]
 
     modified_bytes = etree.tostring(mei_root, pretty_print=True, encoding='UTF-8')

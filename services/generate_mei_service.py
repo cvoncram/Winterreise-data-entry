@@ -1,4 +1,3 @@
-import os
 import zipfile
 import uuid
 from pathlib import Path
@@ -49,6 +48,7 @@ def generate_mei_package(
     pianist_last: str,
     gnd_uid: str,
     context: str,
+    label_addition: str,
     templates_dir,
     out_dir
 ):
@@ -70,7 +70,8 @@ def generate_mei_package(
 
     # safe parts
     safe_last = _sanitize_filename_part(pianist_last)
-    label_base = f"{year}_{pianist_last}" if pianist_last else f"{year}_pianist"
+    safe_label_addition = _sanitize_filename_part(label_addition)
+    label_base = f"{year}_{pianist_last}_{label_addition}" if label_addition else f"{year}_{pianist_last}"
     gnd_uri = f"https://d-nb.info/gnd/{gnd_uid}" if gnd_uid else ""
 
     generated_paths = []
@@ -181,14 +182,13 @@ def generate_mei_package(
             root.append(appinfo_fragment)
 
         # Write file
-        idx_str = str(i).zfill(2)
-        outname = f"{year}_{_sanitize_filename_part(safe_last)}_{i}_Audio_Data.xml"
+        outname = f"{year}_{_sanitize_filename_part(safe_last)}_{_sanitize_filename_part(safe_label_addition)}_{i}_Audio_Data.xml" if label_addition else f"{year}_{_sanitize_filename_part(safe_last)}_{i}_Audio_Data.xml"
         outpath = run_dir / outname
         tree.write(str(outpath), encoding="utf-8", xml_declaration=True, pretty_print=True)
         generated_paths.append(outpath)
 
     # Create ZIP
-    zipname = f"{run_id}.zip"
+    zipname = f"{year}_{_sanitize_filename_part(safe_last)}_{_sanitize_filename_part(safe_label_addition)}.zip" if label_addition else f"{year}_{_sanitize_filename_part(safe_last)}l"
     zippath = Path(out_dir) / zipname
     with zipfile.ZipFile(str(zippath), "w", zipfile.ZIP_DEFLATED) as zf:
         for p in generated_paths:

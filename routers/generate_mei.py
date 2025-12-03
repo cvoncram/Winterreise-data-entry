@@ -28,6 +28,7 @@ def process(
     gnd_uid: str = Form(...),
     year: str = Form(...),
     context: str = Form(...),
+    label_addition: str = Form(...),
     manifestation_id: str = Form(...),
     manifestation_n: int = Form(1)
 ):
@@ -39,6 +40,7 @@ def process(
     context = (context or "").strip()
     manifestation_id = (manifestation_id or "").strip()
     manifestation_n = int(manifestation_n or 1)
+    label_addition = (label_addition or "").strip()
 
     zip_path, first_meihead_str, first_filename = generate_mei_package(
         manifestation_id=manifestation_id,
@@ -48,6 +50,7 @@ def process(
         pianist_last=pianist_last,
         gnd_uid=gnd_uid,
         context=context,
+        label_addition=label_addition,
         templates_dir="backend/resources/mei_templates",
         out_dir=TEMP
     )
