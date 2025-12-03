@@ -3,8 +3,10 @@
 
 {{ page_header(
     "Generate 24 MEI-XML Files",
-    "This tool generates a ZIP folder containing 24 structured MEI files from XML templates. You only need to supply metadata once and it will be applied consistently across all generated files.",
-    "All fields are required. The same xml:id is applied to all 24 songs. The output is one ZIP file containing all generated MEI-XMLs."
+    "This tool generates a ZIP folder containing 24 MEI files from XML templates for all pieces from one rendition of Schubert's <i>Winterreise</i>. 
+    You only need to supply metadata once and it will be applied consistently across all generated files." | safe,
+    "In cases where there are several renditions by the same pianist, you have the option of extending the label (best practice: place + A/B if needed).
+    All other fields must be filled. The output is one ZIP file containing all generated MEI-XMLs."
 ) }}
 
 
@@ -36,6 +38,7 @@
 
     {{ text_input("manifestation_id", "manifestation_id", "Manifestation xml:id (for all 24 files)") }}
     {{ text_input("manifestation_n", "manifestation_n", "Number in the list of recordings (@n attribute in manifestation tag)", "1") }}
+    {{ text_input("label_addition", "label_addition", "Label extension (optional)", "") }}
 
     <button type="submit">Generate 24 MEI files (ZIP)</button>
 </form>
