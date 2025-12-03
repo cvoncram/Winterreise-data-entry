@@ -5,7 +5,8 @@ from fastapi import APIRouter, UploadFile, Form, Request, HTTPException
 from fastapi.responses import JSONResponse, FileResponse
 from backend.dependencies import ensure_extension, store_file, TOKENS, sanitize_filename, templates
 from backend.services.sv_parser import parse_sv_bytes
-from backend.services.sv_mapper import generate_mei_from_sv, generate_layer_previews
+from backend.services.sv_mapper import generate_mei_from_sv
+from backend.services.mei_preview import generate_layer_previews
 
 router = APIRouter(prefix="/sv-to-mei", tags=["sv-to-mei"])
 
