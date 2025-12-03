@@ -1,72 +1,8 @@
 from lxml import etree
-from typing import List, Dict, Tuple, Optional
+from typing import List, Tuple, Optional
 import numpy as np
 from backend.services.sv_parser import find_datasets, extract_points
 from copy import deepcopy
-
-def generate_layer_previews(sv_tree, max_points: int = 5) -> Tuple[Dict[str, str], Dict[str, Optional[str]]]:
-    """
-    Returns short XML previews for beat/spectral/power layers
-    (model + dataset + first N <point> elements), 
-    and detected dataset ids.
-    """
-    datasets = find_datasets(sv_tree)
-    previews: Dict[str, str] = {}
-    detected_layers: Dict[str, Optional[str]] = {}
-
-    def preview_layer(layer: Dict) -> str:
-        lines = []
-
-        model_el = layer.get("model")
-        if model_el is not None:
-            model_txt = etree.tostring(model_el, pretty_print=True, encoding=str).strip()
-            lines.append(model_txt)
-
-        dataset_el = layer["element"]
-
-        # first line of dataset opening tag
-        dataset_open = etree.tostring(dataset_el, pretty_print=True, encoding=str).splitlines()[0]
-        lines.append(dataset_open)
-
-        # collect point text
-        all_points = dataset_el.findall(".//point")
-        for p in all_points[:max_points]:
-            p_txt = etree.tostring(p, pretty_print=True, encoding=str).strip()
-            lines.append("  " + p_txt)  # <-- indent
-
-        # add "more" marker if needed
-        if len(all_points) > max_points:
-            lines.append("  <!-- ...more points... -->")
-
-        # dataset closing tag
-        lines.append("</dataset>")
-
-        # no empty lines added here
-        return "\n".join(lines)
-
-    # Layer selection rules
-    layer_specs = [
-        ("beat", lambda d: d.get("dimensions") == "1" or (d.get("model_name") or "") == ""),
-        ("spectral", lambda d: "spectral" in (d.get("model_name") or "").lower()),
-        ("power", lambda d: "power" in (d.get("model_name") or "").lower())
-    ]
-
-    for name, rule in layer_specs:
-        layer = next((d for d in datasets.values() if rule(d)), None)
-        if layer:
-            model_el = next(
-                (m for m in sv_tree.findall(".//model") if m.get("dataset") == layer["element"].get("id")),
-                None
-            )
-            layer["model"] = model_el
-            previews[name] = preview_layer(layer)
-            detected_layers[name] = layer["element"].get("id")
-        else:
-            previews[name] = "(not found)"
-            detected_layers[name] = None
-
-    return previews, detected_layers
-
 
 def generate_mei_from_sv(
     sv_tree,
