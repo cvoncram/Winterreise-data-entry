@@ -3,11 +3,11 @@
 {% block content %}
 
 {% set desc %}
-This tool decompresses a Sonic Visualiser Session file to extract the measure/beat, spectral centroid, and powercurve layers from the decompressed 
+"This tool decompresses a Sonic Visualiser Session file to extract the measure/beat, spectral centroid, and powercurve layers from the decompressed 
 XML file. You may verify from the previews that the layers have been correctly identified and change the mapping if necessary. The data from
 these layers is then aggregated and mapped onto the tempo, dynam, and annot (spectral centroid) elements in an MEI-XML file
 (which you can <a href="/generate-mei">generate with the MEI-XML generator tool</a>). The tool will also save the data you enter in the fields
-in the head matter of the MEI file, making it possible to track how the calculations were made. 
+in the head matter of the MEI file, making it possible to track how the calculations were made." 
 {% endset %}
 
 {{ page_header(
@@ -76,10 +76,10 @@ in the head matter of the MEI file, making it possible to track how the calculat
 
     {{ text_input("sample_rate", "sample_rate", "Sample rate (usually stays the same)", "44100") }}
     {{ text_input("mf_db", "mf_db", "dB value for calibrating: how loud is mezzoforte?", "-30.0") }}
-    {{ text_input("step_db", "step_db", "Dynamic range (i.e. how great is the difference between musical levels in dB?)", "10.0") }}
-        {{ toggle(
+    {{ text_input("step_db", "step_db", "Dynamic range (i.e., how great is the difference between musical levels in dB?)", "10.0") }}
+    {{ toggle(
         "pickup",
-        "The piece contains a pickup measure (Auftakt)",
+        "The piece contains a pickup measure (<i>Auftakt</i>)" | safe,
         checked=False,
         value="1"
     ) }}
@@ -91,6 +91,8 @@ in the head matter of the MEI file, making it possible to track how the calculat
 </form>
 
 <hr>
+
+<div id="warning-panel"></div>
 
 <div id="mei-preview"></div>
 

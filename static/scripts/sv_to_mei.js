@@ -81,6 +81,22 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await resp.json();
             const token = data.token;
 
+            // ===========================
+            // Display warnings (if any)
+            // ===========================
+            const warningPanel = document.getElementById("warning-panel");
+
+            // Inside your submit handler, after fetching /process
+            if (data.warnings && data.warnings.length > 0) {
+                warningPanel.style.display = "block";
+                warningPanel.innerHTML = data.warnings
+                    .map(w => `<div>⚠️ ${w}</div>`)
+                    .join("");
+            } else {
+                warningPanel.style.display = "none";
+                warningPanel.innerHTML = "";
+            }
+
             // Fetch MEI preview
             const previewResp = await fetch("/sv-to-mei/preview", {
                 method: "POST",

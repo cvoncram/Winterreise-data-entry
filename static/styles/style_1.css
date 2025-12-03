@@ -111,7 +111,7 @@ textarea:focus,
 select:focus,
 .form-control:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(56,81,112,0.12);
+    box-shadow: 0 0 0 3px #ececec;
 }
 
 /* -------------------- */
@@ -387,10 +387,6 @@ form > * {
 /* -------------------- */
 
 /* Container for each layer row */
-
-
-
-
 .layer-block {
     display: flex;
     gap: 1em; /* space between preview and dropdown */
@@ -462,4 +458,15 @@ form > * {
     white-space: pre-wrap;  /* preserve formatting but wrap lines */
     word-break: break-word;  /* break long words */
     margin: 0;               /* remove default pre margin */
+}
+
+#warning-panel {
+    display:none;
+    color: #ececec;
+    background-color: #142d4c;
+    margin-top:1em;
+    font-weight:bold;
+    padding: 10px;
+    border-radius: 6px;
+    box-shadow: 3px #9fd3c7;
 }

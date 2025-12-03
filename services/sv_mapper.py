@@ -122,6 +122,7 @@ def generate_mei_from_sv(
     measures = mei_root.findall('.//mei:measure', namespaces=ns)
     if not measures:
         raise ValueError("MEI file contains no <measure> elements.")
+    num_measures = len(measures)
 
     # -----------------------
     # Determine beats per measure from first measure
@@ -131,17 +132,18 @@ def generate_mei_from_sv(
     if first_add is None:
         first_add = etree.SubElement(first_measure, f"{{{ns['mei']}}}add")
 
-    # Get all tempo tstamp.ges values as beats
+    # Get all tempo tstamp.ges values as beats (sorted by appearance)
     beat_tstamps = [int(e.get('tstamp.ges')) for e in first_add.findall('mei:tempo', namespaces=ns)]
     if not beat_tstamps:
-        # Fallback: use 1..N evenly spaced beats
-        num_measures = len(measures)
-        beats_per_measure = len(beat_points) // num_measures
+        # Fallback: use 1..N evenly spaced beats across measures
+        beats_per_measure = len(beat_points) // num_measures if num_measures else 0
+        if beats_per_measure == 0:
+            raise ValueError("Cannot determine beats per measure (no tempo tags and no beats).")
         beat_tstamps = list(range(1, beats_per_measure+1))
     beats_per_measure = len(beat_tstamps)
 
     # -----------------------
-    # Tempos
+    # Tempos (per interval)
     # -----------------------
     tempos = []
     for i in range(len(beat_points)-1):
@@ -150,7 +152,7 @@ def generate_mei_from_sv(
     tempos.append(tempos[-1] if tempos else 0.0)
 
     # -----------------------
-    # Beat intervals
+    # Beat intervals (start,end) per SV interval
     # -----------------------
     beat_intervals = []
     for i in range(len(beat_points)):
@@ -161,7 +163,7 @@ def generate_mei_from_sv(
             interval_len = prev_end - prev_start
             beat_intervals.append((beat_points[i][0], beat_points[i][0] + interval_len))
         else:
-            beat_intervals.append((beat_points[i][0], beat_points[i][0]+1))
+            beat_intervals.append((beat_points[i][0], beat_points[i][0] + 1))
 
     def aggregate(points, start, end, mode='rms'):
         vals = [v for f, v, _ in points if v is not None and start <= f < end]
@@ -174,124 +176,198 @@ def generate_mei_from_sv(
         return None
 
     # -----------------------
-    # Helper: create/get child
+    # Helper: create/get child (preserves existing children if present)
     # -----------------------
     def get_or_create_measure_child(parent, tag, tstamp):
         child = parent.find(f"./mei:{tag}[@tstamp.ges='{tstamp}']", namespaces=ns)
         if child is None:
-            child = etree.SubElement(parent, f"{{{ns['mei']}}}{tag}", **{'tstamp.ges': tstamp})
+            child = etree.SubElement(parent, f"{{{ns['mei']}}}{tag}", **{'tstamp.ges': str(tstamp)})
         return child
 
     # -----------------------
-    # Process each measure
+    # Build timeline mapping: list of (interval_idx, measure_idx, tstamp)
+    # interval_idx indexes beat_intervals/tempos/beat_points
+    # measure_idx is index into measures list (0-based). measure 0 is pickup if pickup=True
     # -----------------------
-    for m_idx, measure in enumerate(measures):
-        add_el = measure.find('mei:add', namespaces=ns)
+    timeline = []
+
+    total_intervals = len(beat_intervals)
+    # If pickup, first SV interval is used for pickup measure (measure 0)
+    interval_start_idx = 0
+    if pickup:
+        if total_intervals < 1:
+            raise ValueError("Not enough intervals for pickup handling.")
+        # map interval 0 -> pickup (measure 0) using last beat tstamp
+        timeline.append({
+            "interval_idx": 0,
+            "measure_idx": 0,
+            "tstamp": beat_tstamps[-1]
+        })
+        interval_start_idx = 1
+
+    # remaining intervals are assigned to normal measures starting at measure index (0 or 1)
+    normal_measure_offset = 1 if pickup else 0
+    remaining_intervals = total_intervals - interval_start_idx
+
+    # Map available intervals into measure/beat slots respecting beats_per_measure
+    # For k from 0..remaining_intervals-1:
+    #   measure  = normal_measure_offset + (k // beats_per_measure)
+    #   beat_idx = k % beats_per_measure -> beat_tstamps[beat_idx]
+    for k in range(remaining_intervals):
+        interval_idx = interval_start_idx + k
+        measure_rel = k // beats_per_measure
+        beat_pos = k % beats_per_measure
+        measure_idx = normal_measure_offset + measure_rel
+        # guard against exceeding measure count
+        if measure_idx >= num_measures:
+            continue
+        timeline.append({
+            "interval_idx": interval_idx,
+            "measure_idx": measure_idx,
+            "tstamp": beat_tstamps[beat_pos]
+        })
+
+    # -----------------------
+    # Iterate timeline and populate MEI accordingly
+    # -----------------------
+    for entry in timeline:
+        interval_idx = entry["interval_idx"]
+        measure_idx = entry["measure_idx"]
+        tstamp_val = entry["tstamp"]
+        tstamp_str = str(tstamp_val)
+
+        if interval_idx >= len(beat_intervals):
+            # defensive check
+            continue
+
+        start, end = beat_intervals[interval_idx]
+        measure_el = measures[measure_idx]
+        add_el = measure_el.find('mei:add', namespaces=ns)
         if add_el is None:
-            add_el = etree.SubElement(measure, f"{{{ns['mei']}}}add")
+            add_el = etree.SubElement(measure_el, f"{{{ns['mei']}}}add")
 
-        # --- PICKUP logic only for first measure ---
-        if pickup and m_idx == 0:
-            last_idx = beats_per_measure - 1
-            if last_idx < len(beat_intervals):
-                start, end = beat_intervals[last_idx]
-                tstamp_str = str(beat_tstamps[last_idx])
-
-                # Spectral
-                if spectral_points:
-                    val = aggregate(spectral_points, start, end, mode='mean')
-                    if val is not None:
-                        annot_el = get_or_create_measure_child(add_el, "annot", tstamp_str)
-                        annot_el.set("label", "spectral centroid (Hz)")
-                        annot_el.set("n", f"{val:.2f}")
-                        annot_el.set("type", "performed")
-
-                # Dynamics
-                if power_points:
-                    vals = [v for f, v, _ in power_points if v is not None and start <= f < end]
-                    if vals:
-                        lin_vals = [10**(v/20) for v in vals]
-                        rms_lin = np.sqrt(np.mean(np.square(lin_vals)))
-                        val_db = 20 * np.log10(rms_lin)
-
-                        dyn_levels = ['ppp','pp','p','mp','mf','f','ff','fff']
-                        mf_index = dyn_levels.index('mf')
-                        level_values = {lvl: mf_db + (i - mf_index) * step_db 
-                                        for i, lvl in enumerate(dyn_levels)}
-                        if val_db < level_values['ppp'] or val_db > level_values['fff']:
-                            n_val = "extreme"
-                        else:
-                            closest_lvl, closest_val = min(
-                                level_values.items(), key=lambda x: abs(val_db - x[1])
-                            )
-                            diff = int(round(val_db - closest_val))
-                            if diff == 0:
-                                n_val = closest_lvl
-                            else:
-                                sign = "+" if diff > 0 else "-"
-                                n_val = f"{closest_lvl}{sign}{abs(diff)}"
-
-                        dynam_el = get_or_create_measure_child(add_el, "dynam", tstamp_str)
-                        dynam_el.set("n", n_val)
-                        dynam_el.set("type", "performed")
-
-            # Fill empty tempos for all beats
-            for tstamp in beat_tstamps:
-                tempo_el = get_or_create_measure_child(add_el, "tempo", str(tstamp))
-                tempo_el.set("mm", "")
-                tempo_el.set("type", "performed")
-
-            continue  # skip normal beat processing for pickup measure
-
-        # --- NORMAL measures ---
-        for b_idx, tstamp in enumerate(beat_tstamps):
-            idx = m_idx * beats_per_measure + b_idx
-            if idx >= len(beat_points):
-                continue
-            start, end = beat_intervals[idx]
-            tstamp_str = str(tstamp)
-
-            # Tempo
-            tempo_val = tempos[idx]
-            tempo_el = get_or_create_measure_child(add_el, "tempo", tstamp_str)
-            tempo_el.set("mm", f"{tempo_val:.2f}")
-            tempo_el.set("type", "performed")
-
+        # If this entry is the pickup (measure 0 when pickup=True), then by rule:
+        # populate only the last beat's spectral + dynamics; tempos should stay empty string.
+        if pickup and measure_idx == 0:
             # Spectral
-            if spectral_points:
-                val = aggregate(spectral_points, start, end, mode='mean')
-                if val is not None:
-                    annot_el = get_or_create_measure_child(add_el, "annot", tstamp_str)
-                    annot_el.set("label", "spectral centroid (Hz)")
-                    annot_el.set("n", f"{val:.2f}")
-                    annot_el.set("type", "performed")
+            val = aggregate(spectral_points, start, end, mode='mean') if spectral_points else None
+            annot_el = get_or_create_measure_child(add_el, "annot", tstamp_str)
+            annot_el.set("label", "spectral centroid (Hz)")
+            annot_el.set("n", f"{val:.2f}" if val is not None else "")
+            annot_el.set("type", "performed")
 
             # Dynamics
-            if power_points:
-                vals = [v for f,v,_ in power_points if v is not None and start <= f < end]
-                if vals:
-                    lin_vals = [10**(v/20) for v in vals]
-                    rms_lin = np.sqrt(np.mean(np.square(lin_vals)))
-                    val_db = 20 * np.log10(rms_lin)
+            vals = [v for f, v, _ in power_points if v is not None and start <= f < end] if power_points else []
+            n_val = ""
+            if vals:
+                lin_vals = [10**(v/20) for v in vals]
+                rms_lin = np.sqrt(np.mean(np.square(lin_vals)))
+                val_db = 20 * np.log10(rms_lin)
+                dyn_levels = ['ppp','pp','p','mp','mf','f','ff','fff']
+                mf_index = dyn_levels.index('mf')
+                level_values = {lvl: mf_db + (i - mf_index) * step_db for i, lvl in enumerate(dyn_levels)}
+                if val_db < level_values['ppp'] or val_db > level_values['fff']:
+                    n_val = "extreme"
+                else:
+                    closest_lvl, closest_val = min(level_values.items(), key=lambda x: abs(val_db - x[1]))
+                    diff = int(round(val_db - closest_val))
+                    n_val = closest_lvl if diff == 0 else f"{closest_lvl}{'+' if diff>0 else '-'}{abs(diff)}"
+            dynam_el = get_or_create_measure_child(add_el, "dynam", tstamp_str)
+            dynam_el.set("n", n_val)
+            dynam_el.set("type", "performed")
 
-                    dyn_levels = ['ppp','pp','p','mp','mf','f','ff','fff']
-                    mf_index = dyn_levels.index('mf')
-                    level_values = {lvl: mf_db + (i - mf_index) * step_db for i, lvl in enumerate(dyn_levels)}
+            # Ensure tempo elements exist for pickup beats but leave empty mm
+            # (we only ensure the tempo for that tstamp; other pickup tstamps handled below if needed)
+            tempo_el = get_or_create_measure_child(add_el, "tempo", tstamp_str)
+            tempo_el.set("mm", "")
+            tempo_el.set("type", "performed")
 
-                    if val_db < level_values['ppp'] or val_db > level_values['fff']:
-                        n_val = "extreme"
-                    else:
-                        closest_lvl, closest_val = min(level_values.items(), key=lambda x: abs(val_db - x[1]))
-                        diff = int(round(val_db - closest_val))
-                        if diff == 0:
-                            n_val = closest_lvl
-                        else:
-                            sign = "+" if diff > 0 else "-"
-                            n_val = f"{closest_lvl}{sign}{abs(diff)}"
+            continue  # done with this pickup entry
 
-                    dynam_el = get_or_create_measure_child(add_el, "dynam", tstamp_str)
-                    dynam_el.set("n", n_val)
-                    dynam_el.set("type", "performed")
+        # --- Normal entries: fill tempo, spectral, dynamics ---
+        # Tempo: always set (empty if no tempo value found)
+        tempo_val = tempos[interval_idx] if interval_idx < len(tempos) else None
+        tempo_el = get_or_create_measure_child(add_el, "tempo", tstamp_str)
+        tempo_el.set("mm", f"{tempo_val:.2f}" if tempo_val is not None else "")
+        tempo_el.set("type", "performed")
+
+        # Spectral
+        val = aggregate(spectral_points, start, end, mode='mean') if spectral_points else None
+        annot_el = get_or_create_measure_child(add_el, "annot", tstamp_str)
+        annot_el.set("label", "spectral centroid (Hz)")
+        annot_el.set("n", f"{val:.2f}" if val is not None else "")
+        annot_el.set("type", "performed")
+
+        # Dynamics
+        vals = [v for f, v, _ in power_points if v is not None and start <= f < end] if power_points else []
+        n_val = ""
+        if vals:
+            lin_vals = [10**(v/20) for v in vals]
+            rms_lin = np.sqrt(np.mean(np.square(lin_vals)))
+            val_db = 20 * np.log10(rms_lin)
+            dyn_levels = ['ppp','pp','p','mp','mf','f','ff','fff']
+            mf_index = dyn_levels.index('mf')
+            level_values = {lvl: mf_db + (i - mf_index) * step_db for i, lvl in enumerate(dyn_levels)}
+            if val_db < level_values['ppp'] or val_db > level_values['fff']:
+                n_val = "extreme"
+            else:
+                closest_lvl, closest_val = min(level_values.items(), key=lambda x: abs(val_db - x[1]))
+                diff = int(round(val_db - closest_val))
+                n_val = closest_lvl if diff == 0 else f"{closest_lvl}{'+' if diff>0 else '-'}{abs(diff)}"
+        dynam_el = get_or_create_measure_child(add_el, "dynam", tstamp_str)
+        dynam_el.set("n", n_val)
+        dynam_el.set("type", "performed")
+
+    # ---------------------------------
+    # Beat count consistency warnings (mapping-aware, tail-end check)
+    # ---------------------------------
+
+    # Helper: count truly populated beats in a measure
+    def count_populated_beats(measure):
+        add_el = measure.find('mei:add', namespaces=ns)
+        if add_el is None:
+            return 0
+        populated = 0
+        # Check each tempo beat
+        for tempo in add_el.findall('mei:tempo', namespaces=ns):
+            if tempo.get('mm', '').strip() != '':
+                populated += 1
+        # Also check if dynam or annot are populated at tstamp without tempo?
+        # Only needed if you want beats counted even if tempo is empty
+        return populated
+
+    # Step 1: Check last populated beat from the end
+    last_measure_idx = num_measures - 1
+    last_measure = measures[last_measure_idx]
+    beats_in_last_measure = count_populated_beats(last_measure)
+
+    if beats_in_last_measure == beats_per_measure:
+        # Last measure is fully populated
+        # Check if there are any extra SV intervals
+        last_inserted_interval = timeline[-1]["interval_idx"] if timeline else -1
+        extra_sv_intervals = max(0, len(beat_intervals) - (last_inserted_interval + 1))
+        if extra_sv_intervals > 0:
+            warnings.append(
+                f"{extra_sv_intervals} SV interval{'s' if extra_sv_intervals>1 else ''} could not be inserted into MEI."
+            )
+    else:
+        # Last measure not fully populated
+        # Count trailing empty MEI beats
+        empty_mei_beats = 0
+        for m_idx in range(last_measure_idx, -1, -1):
+            m = measures[m_idx]
+            num_pop = count_populated_beats(m)
+            empty_in_measure = beats_per_measure - num_pop
+            empty_mei_beats += empty_in_measure
+            if num_pop > 0:
+                break  # found last populated beat
+
+        if empty_mei_beats > 0:
+            warnings.append(
+                f"Your SV data leaves {empty_mei_beats} MEI beat{'s' if empty_mei_beats>1 else ''} empty at the end of the file."
+            )
+
+
 
     # -----------------------
     # Preview (strip xmlns for display)
@@ -300,9 +376,11 @@ def generate_mei_from_sv(
         for e in elem.iter():
             if isinstance(e.tag, str) and '}' in e.tag:
                 e.tag = e.tag.split('}', 1)[1]
+        # remove namespace-declared attributes
         for attr in list(elem.attrib):
             if attr.startswith("{"):
                 elem.attrib.pop(attr)
+        # remove default xmlns on the element if present
         if 'xmlns' in elem.attrib:
             elem.attrib.pop('xmlns')
         return elem
