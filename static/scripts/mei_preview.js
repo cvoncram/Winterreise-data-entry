@@ -17,29 +17,23 @@ function renderMEIPreview(measures) {
 
     const section = (title, subset) => {
         const secDiv = document.createElement("div");
+        secDiv.classList.add("mei-preview-section");
 
         const h5 = document.createElement("h5");
         h5.textContent = title;
         secDiv.appendChild(h5);
 
         const flexContainer = document.createElement("div");
-        flexContainer.style.display = "flex";
-        flexContainer.style.flexWrap = "wrap";
-        flexContainer.style.gap = "10px";
+        flexContainer.classList.add("mei-preview-flex");
 
         subset.forEach(m => {
             const box = document.createElement("div");
-            box.style.border = "1px solid #385170";
-            box.style.padding = "10px";
-            box.style.background = "#9fd3c7";
-            box.style.flex = "1 1 45%";
-            box.style.overflowX = "auto";
-            box.style.borderRadius = "6px";
+            box.classList.add("mei-preview-box");
 
             const pre = document.createElement("pre");
             pre.textContent = m;
-            box.appendChild(pre);
 
+            box.appendChild(pre);
             flexContainer.appendChild(box);
         });
 
@@ -47,10 +41,11 @@ function renderMEIPreview(measures) {
         return secDiv;
     };
 
-    // Split measures in first half / last half
-    const first5 = measures.slice(0, 5);
-    const last5 = measures.slice(-5);
 
-    container.appendChild(section("First 5 Measures", first5));
-    container.appendChild(section("Last 5 Measures", last5));
+    // Split measures in first half / last half
+    const first4 = measures.slice(0, 4);
+    const last4 = measures.slice(-4);
+
+    container.appendChild(section("First Measures", first4));
+    container.appendChild(section("Last Measures", last4));
 }

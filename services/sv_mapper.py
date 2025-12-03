@@ -76,7 +76,8 @@ def generate_mei_from_sv(
     step_db: float = 10.0,
     beat_layer_name: Optional[str] = None,
     spectral_layer_name: Optional[str] = None,
-    power_layer_name: Optional[str] = None
+    power_layer_name: Optional[str] = None,
+    pickup: bool = False
 ) -> Tuple[bytes, List[str], List[str]]:
 
     warnings = []
@@ -93,7 +94,7 @@ def generate_mei_from_sv(
         ns = {"mei": uri}
 
     # -----------------------
-    # Find datasets from SV
+    # Find datasets
     # -----------------------
     datasets = find_datasets(sv_tree)
 
@@ -116,32 +117,41 @@ def generate_mei_from_sv(
     power_points = extract_points(power_layer['element']) if power_layer else []
 
     # -----------------------
-    # Find <measure> elements (namespace-aware)
+    # Find <measure> elements
     # -----------------------
     measures = mei_root.findall('.//mei:measure', namespaces=ns)
     if not measures:
         raise ValueError("MEI file contains no <measure> elements.")
 
     # -----------------------
-    # Beat mapping calculations
+    # Determine beats per measure from first measure
     # -----------------------
-    num_measures = len(measures)
-    num_beats = len(beat_points)
-    beats_per_measure = num_beats / num_measures if num_measures else 0
-    if beats_per_measure == 0:
-        raise ValueError("Division by zero: no beats found.")
-    if not beats_per_measure.is_integer():
-        warnings.append(f"{num_beats} beats across {num_measures} measures (non-integer)")
-    beats_per_measure = int(beats_per_measure)
+    first_measure = measures[0]
+    first_add = first_measure.find('mei:add', namespaces=ns)
+    if first_add is None:
+        first_add = etree.SubElement(first_measure, f"{{{ns['mei']}}}add")
 
-    # Calculate tempos per beat (copy last interval for final beat)
+    # Get all tempo tstamp.ges values as beats
+    beat_tstamps = [int(e.get('tstamp.ges')) for e in first_add.findall('mei:tempo', namespaces=ns)]
+    if not beat_tstamps:
+        # Fallback: use 1..N evenly spaced beats
+        num_measures = len(measures)
+        beats_per_measure = len(beat_points) // num_measures
+        beat_tstamps = list(range(1, beats_per_measure+1))
+    beats_per_measure = len(beat_tstamps)
+
+    # -----------------------
+    # Tempos
+    # -----------------------
     tempos = []
     for i in range(len(beat_points)-1):
         delta_sec = (beat_points[i+1][0] - beat_points[i][0]) / sample_rate
         tempos.append(60.0 / delta_sec if delta_sec > 0 else 0.0)
     tempos.append(tempos[-1] if tempos else 0.0)
 
-    # Beat intervals for aggregation (last beat copies previous interval)
+    # -----------------------
+    # Beat intervals
+    # -----------------------
     beat_intervals = []
     for i in range(len(beat_points)):
         if i < len(beat_points)-1:
@@ -164,39 +174,94 @@ def generate_mei_from_sv(
         return None
 
     # -----------------------
-    # Helper: get or create MEI child
+    # Helper: create/get child
     # -----------------------
     def get_or_create_measure_child(parent, tag, tstamp):
-        child = parent.find(f".//mei:{tag}[@tstamp.ges='{tstamp}']", namespaces=ns)
+        child = parent.find(f"./mei:{tag}[@tstamp.ges='{tstamp}']", namespaces=ns)
         if child is None:
             child = etree.SubElement(parent, f"{{{ns['mei']}}}{tag}", **{'tstamp.ges': tstamp})
         return child
 
     # -----------------------
-    # Add/Update annotations to MEI
+    # Process each measure
     # -----------------------
     for m_idx, measure in enumerate(measures):
         add_el = measure.find('mei:add', namespaces=ns)
         if add_el is None:
             add_el = etree.SubElement(measure, f"{{{ns['mei']}}}add")
 
-        for b in range(beats_per_measure):
-            idx = m_idx * beats_per_measure + b
+        # --- PICKUP logic only for first measure ---
+        if pickup and m_idx == 0:
+            last_idx = beats_per_measure - 1
+            if last_idx < len(beat_intervals):
+                start, end = beat_intervals[last_idx]
+                tstamp_str = str(beat_tstamps[last_idx])
+
+                # Spectral
+                if spectral_points:
+                    val = aggregate(spectral_points, start, end, mode='mean')
+                    if val is not None:
+                        annot_el = get_or_create_measure_child(add_el, "annot", tstamp_str)
+                        annot_el.set("label", "spectral centroid (Hz)")
+                        annot_el.set("n", f"{val:.2f}")
+                        annot_el.set("type", "performed")
+
+                # Dynamics
+                if power_points:
+                    vals = [v for f, v, _ in power_points if v is not None and start <= f < end]
+                    if vals:
+                        lin_vals = [10**(v/20) for v in vals]
+                        rms_lin = np.sqrt(np.mean(np.square(lin_vals)))
+                        val_db = 20 * np.log10(rms_lin)
+
+                        dyn_levels = ['ppp','pp','p','mp','mf','f','ff','fff']
+                        mf_index = dyn_levels.index('mf')
+                        level_values = {lvl: mf_db + (i - mf_index) * step_db 
+                                        for i, lvl in enumerate(dyn_levels)}
+                        if val_db < level_values['ppp'] or val_db > level_values['fff']:
+                            n_val = "extreme"
+                        else:
+                            closest_lvl, closest_val = min(
+                                level_values.items(), key=lambda x: abs(val_db - x[1])
+                            )
+                            diff = int(round(val_db - closest_val))
+                            if diff == 0:
+                                n_val = closest_lvl
+                            else:
+                                sign = "+" if diff > 0 else "-"
+                                n_val = f"{closest_lvl}{sign}{abs(diff)}"
+
+                        dynam_el = get_or_create_measure_child(add_el, "dynam", tstamp_str)
+                        dynam_el.set("n", n_val)
+                        dynam_el.set("type", "performed")
+
+            # Fill empty tempos for all beats
+            for tstamp in beat_tstamps:
+                tempo_el = get_or_create_measure_child(add_el, "tempo", str(tstamp))
+                tempo_el.set("mm", "")
+                tempo_el.set("type", "performed")
+
+            continue  # skip normal beat processing for pickup measure
+
+        # --- NORMAL measures ---
+        for b_idx, tstamp in enumerate(beat_tstamps):
+            idx = m_idx * beats_per_measure + b_idx
             if idx >= len(beat_points):
                 continue
             start, end = beat_intervals[idx]
-            tstamp = str(b+1)
+            tstamp_str = str(tstamp)
 
             # Tempo
-            tempo_el = get_or_create_measure_child(add_el, "tempo", tstamp)
-            tempo_el.set("mm", f"{tempos[idx]:.2f}")
+            tempo_val = tempos[idx]
+            tempo_el = get_or_create_measure_child(add_el, "tempo", tstamp_str)
+            tempo_el.set("mm", f"{tempo_val:.2f}")
             tempo_el.set("type", "performed")
 
-            # Spectral centroid
+            # Spectral
             if spectral_points:
                 val = aggregate(spectral_points, start, end, mode='mean')
                 if val is not None:
-                    annot_el = get_or_create_measure_child(add_el, "annot", tstamp)
+                    annot_el = get_or_create_measure_child(add_el, "annot", tstamp_str)
                     annot_el.set("label", "spectral centroid (Hz)")
                     annot_el.set("n", f"{val:.2f}")
                     annot_el.set("type", "performed")
@@ -205,19 +270,14 @@ def generate_mei_from_sv(
             if power_points:
                 vals = [v for f,v,_ in power_points if v is not None and start <= f < end]
                 if vals:
-                    # Convert from dBFS to linear amplitude
                     lin_vals = [10**(v/20) for v in vals]
-                    # Compute RMS in linear domain
                     rms_lin = np.sqrt(np.mean(np.square(lin_vals)))
-                    # Convert RMS back to dB
                     val_db = 20 * np.log10(rms_lin)
 
-                    # Compute dynamic levels relative to mf
                     dyn_levels = ['ppp','pp','p','mp','mf','f','ff','fff']
                     mf_index = dyn_levels.index('mf')
                     level_values = {lvl: mf_db + (i - mf_index) * step_db for i, lvl in enumerate(dyn_levels)}
 
-                    # Map value to dynamic
                     if val_db < level_values['ppp'] or val_db > level_values['fff']:
                         n_val = "extreme"
                     else:
@@ -229,18 +289,22 @@ def generate_mei_from_sv(
                             sign = "+" if diff > 0 else "-"
                             n_val = f"{closest_lvl}{sign}{abs(diff)}"
 
-                    dynam_el = get_or_create_measure_child(add_el, "dynam", tstamp)
+                    dynam_el = get_or_create_measure_child(add_el, "dynam", tstamp_str)
                     dynam_el.set("n", n_val)
                     dynam_el.set("type", "performed")
 
-
     # -----------------------
-    # Build preview measures (namespace-stripped for display)
+    # Preview (strip xmlns for display)
     # -----------------------
     def strip_ns(elem):
         for e in elem.iter():
             if isinstance(e.tag, str) and '}' in e.tag:
                 e.tag = e.tag.split('}', 1)[1]
+        for attr in list(elem.attrib):
+            if attr.startswith("{"):
+                elem.attrib.pop(attr)
+        if 'xmlns' in elem.attrib:
+            elem.attrib.pop('xmlns')
         return elem
 
     preview_measures = [

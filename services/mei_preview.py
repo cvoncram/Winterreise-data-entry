@@ -1,6 +1,5 @@
 from copy import deepcopy
 from lxml import etree
-from typing import List
 
 def extract_preview_measures(mei_bytes: bytes, first: int = 5, last: int = 5):
     parser = etree.XMLParser(remove_blank_text=True)

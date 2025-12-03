@@ -186,7 +186,7 @@ select:focus,
 .toggle-switch {
     width: 46px;
     height: 24px;
-    background-color: #ececec;
+    background-color: #9fd3c7;
     border-radius: 12px;
     position: relative;
     transition: background-color 0.18s ease;
@@ -428,4 +428,38 @@ form > * {
 .layer-block .dropdown-holder .custom-select-display {
     max-width: 100%;
     box-sizing: border-box;
+}
+
+/* container for each MEI preview section */
+.mei-preview-section {
+    margin-bottom: 1em;
+}
+
+/* section title */
+.mei-preview-section h5 {
+    margin-bottom: 0.5em;
+}
+
+/* flex container for the boxes */
+.mei-preview-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* individual measure box */
+.mei-preview-box {
+    border: 1px solid #385170;
+    padding: 10px;
+    background: #9fd3c7;
+    flex: 1 1 45%;
+    border-radius: 6px;
+    overflow-x: visible; /* prevent horizontal scrolling */
+}
+
+/* pre inside the box: wrap long lines */
+.mei-preview-box pre {
+    white-space: pre-wrap;  /* preserve formatting but wrap lines */
+    word-break: break-word;  /* break long words */
+    margin: 0;               /* remove default pre margin */
 }

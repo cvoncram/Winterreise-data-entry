@@ -6,18 +6,18 @@
 This tool decompresses a Sonic Visualiser Session file to extract the measure/beat, spectral centroid, and powercurve layers from the decompressed 
 XML file. You may verify from the previews that the layers have been correctly identified and change the mapping if necessary. The data from
 these layers is then aggregated and mapped onto the tempo, dynam, and annot (spectral centroid) elements in an MEI-XML file
-(which you can <a href="/generate-mei">generate with the MEI-XML generator tool</a>).
+(which you can <a href="/generate-mei">generate with the MEI-XML generator tool</a>). The tool will also save the data you enter in the fields
+in the head matter of the MEI file, making it possible to track how the calculations were made. 
 {% endset %}
 
 {{ page_header(
-    "SV → MEI Conversion Tool",
+    "Transfer Sonic Visualiser data to XML-MEI",
     desc | safe,
-    "Upload a Sonic Visualiser Session file (.sv) and an MEI-XML file. Ideally, your .sv file should only contain these three layers to avoid any 
-    confusion when the app detects the different layers. It is not possible to change the name of the downloaded file, it will always correspond to the 
-    uploaded MEI-XML file. To facilitate the process, it is recommended to store the SV and MEI-XML files in the same folder, 
-    facilitating and expediting the process when working with larger numbers of files."
+    "Upload a Sonic Visualiser Session file (.sv) and an MEI-XML file. Ideally, your .sv file should only contain the three layers mentioned above to
+    avoid any confusion when detecting the different layers. It is not possible to change the name of the downloaded file; it will always correspond to the 
+    uploaded MEI-XML file. To facilitate the process, it is recommended to store the SV and MEI-XML files in the same folder, facilitating and expediting 
+    the process when working with larger numbers of files."
 ) }}
-
 
 <form id="sv-to-mei-form" method="post" enctype="multipart/form-data">
 
@@ -74,9 +74,15 @@ these layers is then aggregated and mapped onto the tempo, dynam, and annot (spe
 
     {{ file_input("mei_file", "mei_file", "MEI file (.mei/.xml)") }}
 
-    {{ text_input("sample_rate", "sample_rate", "Sample rate", "44100") }}
-    {{ text_input("mf_db", "mf_db", "mf_db (dB threshold)", "-30.0") }}
-    {{ text_input("step_db", "step_db", "Dynamic step (dB)", "10.0") }}
+    {{ text_input("sample_rate", "sample_rate", "Sample rate (usually stays the same)", "44100") }}
+    {{ text_input("mf_db", "mf_db", "dB value for calibrating: how loud is mezzoforte?", "-30.0") }}
+    {{ text_input("step_db", "step_db", "Dynamic range (i.e. how great is the difference between musical levels in dB?)", "10.0") }}
+        {{ toggle(
+        "pickup",
+        "The piece contains a pickup measure (Auftakt)",
+        checked=False,
+        value="1"
+    ) }}
 
     <div class="form-row">
         <button type="submit" class="btn btn-primary">Process</button>
