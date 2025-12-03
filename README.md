@@ -1,9 +1,12 @@
-# Tools for _Winterreise_ Data Entry 
+# 🎵 Tools for _Winterreise_ Data Entry 🎼
 
 This application runs locally in your browser. It decompresses Sonic Visualiser session files, extracts the data layers, aggregates them according to user input, 
 and finally maps this data onto and inserts it in empty MEI-XML files. It is also possible to generate new MEI-XML files from metadata.
 
-This page and these tools were created by Clemens von Cramon as part of the project Creating Schubert’s „Die Winterreise“ in Performance with Dietrich Fischer-Dieskau.
+This page and these tools were created by Clemens von Cramon as part of the project [Creating Schubert’s „Die Winterreise“ in Performance with Dietrich Fischer-Dieskau](https://github.com/Joshua-Neumann/Fischer_Dieskau_Winterreise).
+
+The process and calculations of mapping dynamic values onto beat markings and creating interpreted dynamics values is inspired by and closely resembles the [Dyn-a-matic tool](https://mazurka.org.uk/software/online/dynamatic/) created by the [Mazurka Project](https://mazurka.org.uk/).
+
 
 ---
 
@@ -76,7 +79,6 @@ deactivate
 
 - [FastAPI](https://fastapi.tiangolo.com/) for HTTP routing and services
 - [Jinja2](https://jinja.palletsprojects.com/en/stable/) for templating
-- [pandas](https://pandas.pydata.org/) for data analysis and manipulation
 - [NumPy](https://numpy.org) for additional mathematical operations
 - [lxml](https://lxml.de/) for processing XML in Python
 
