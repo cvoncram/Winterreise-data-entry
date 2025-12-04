@@ -91,15 +91,15 @@ def generate_mei_from_sv(
     # Beat intervals (start,end) per SV interval
     # -----------------------
     beat_intervals = []
-    for i in range(len(beat_points)):
-        if i < len(beat_points)-1:
-            beat_intervals.append((beat_points[i][0], beat_points[i+1][0]))
-        elif i > 0:
-            prev_start, prev_end = beat_intervals[-1]
-            interval_len = prev_end - prev_start
-            beat_intervals.append((beat_points[i][0], beat_points[i][0] + interval_len))
-        else:
-            beat_intervals.append((beat_points[i][0], beat_points[i][0] + 1))
+    for i in range(len(beat_points)-1):
+        # interval from current beat to next beat
+        beat_intervals.append((beat_points[i][0], beat_points[i+1][0]))
+        if len(beat_points) == 1:
+            beat_intervals = [(beat_points[0][0], beat_points[0][0] + 1)]
+
+    print("Calculated beat intervals:")
+    for idx, (start, end) in enumerate(beat_intervals, start=1):
+        print(f"{idx}: ({start}, {end})")
 
     def aggregate(points, start, end, mode='rms'):
         vals = [v for f, v, _ in points if v is not None and start <= f < end]
