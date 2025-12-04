@@ -97,10 +97,6 @@ def generate_mei_from_sv(
         if len(beat_points) == 1:
             beat_intervals = [(beat_points[0][0], beat_points[0][0] + 1)]
 
-    print("Calculated beat intervals:")
-    for idx, (start, end) in enumerate(beat_intervals, start=1):
-        print(f"{idx}: ({start}, {end})")
-
     def aggregate(points, start, end, mode='rms'):
         vals = [v for f, v, _ in points if v is not None and start <= f < end]
         if not vals:
