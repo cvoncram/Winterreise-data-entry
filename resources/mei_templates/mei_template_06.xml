@@ -418,412 +418,408 @@
     <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
     <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
 </add></measure>
-                  <measure xml:id="m95crvo" type="mscore-repeat-2" right="rptend" n="32"><add >
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-</add></measure>
-<measure xml:id="l1c0k49p" left="rptstart" n="33">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="m95crvo" type="mscore-repeat-2" right="rptend" n="32">
+                        <add >
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                    </add></measure>
+                    <measure xml:id="l1c0k49p" left="rptstart" n="33">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
+                    <measure xml:id="t1xeo941" n="34">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="t1xeo941" n="34">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="c1o0nh01" n="35">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="c1o0nh01" n="35">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="u8glry9" n="36">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="u8glry9" n="36">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="k10xduuf" n="37">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="k10xduuf" n="37">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="s1ieqsp4" n="38">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="s1ieqsp4" n="38">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="c1hufeqe" n="39">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="c1hufeqe" n="39">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="x1os660k" n="40">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="x1os660k" n="40">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="ura2pyc" n="41">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="ura2pyc" n="41">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="p12efdil" n="42">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="p12efdil" n="42">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="hyazu7p" n="43">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="hyazu7p" n="43">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="tggqf73" n="44">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="tggqf73" n="44">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="f1rvnhdc" n="45">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="f1rvnhdc" n="45">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="r12bfxp" n="46">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="r12bfxp" n="46">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="d1q4tker" n="47">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="d1q4tker" n="47">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="ou5k64j" n="48">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="ou5k64j" n="48">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="al6wh8u" n="49">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="al6wh8u" n="49">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="v1h889u5" n="50">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="v1h889u5" n="50">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="l3ou3j1" n="51">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="l3ou3j1" n="51">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="w8l01ya" n="52">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="w8l01ya" n="52">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="h1xixe1b" n="53">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="h1xixe1b" n="53">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="d1jyis4v" n="54">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="d1jyis4v" n="54">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="t1hev3ro" n="55">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="t1hev3ro" n="55">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="ssvnv6m" n="56">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="ssvnv6m" n="56">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="i1ro027c" n="57">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="i1ro027c" n="57">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="u15nszg0" n="58">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="u15nszg0" n="58">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
+                    <measure xml:id="h138tvtf" n="59">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
 
-<measure xml:id="h138tvtf" n="59">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
-
-<measure xml:id="tyx1ki9" right="rptend" n="60">
-  <add>
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-  </add>
-</measure>
-
-
-
-
+                    <measure xml:id="tyx1ki9" right="rptend" n="60">
+                      <add>
+                        <tempo tstamp.ges="1" mm="" type="performed"/>
+                        <tempo tstamp.ges="2" mm="" type="performed"/>
+                        <tempo tstamp.ges="3" mm="" type="performed"/>
+                        <dynam tstamp.ges="1" n="" type="performed"/>
+                        <dynam tstamp.ges="2" n="" type="performed"/>
+                        <dynam tstamp.ges="3" n="" type="performed"/>
+                        <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
+                        <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+                      </add>
+                    </measure>
                </section>
             </score>
          </mdiv>

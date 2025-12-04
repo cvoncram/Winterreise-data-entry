@@ -3,6 +3,7 @@ import uuid
 from pathlib import Path
 from datetime import datetime
 from lxml import etree
+from backend.config import TEMP_MEI_DIR
 
 NS = {"mei": "http://www.music-encoding.org/ns/mei"}
 
@@ -189,7 +190,7 @@ def generate_mei_package(
 
     # Create ZIP
     zipname = f"{year}_{_sanitize_filename_part(safe_last)}_{_sanitize_filename_part(safe_label_addition)}.zip" if label_addition else f"{year}_{_sanitize_filename_part(safe_last)}l"
-    zippath = Path(out_dir) / zipname
+    zippath = TEMP_MEI_DIR / zipname
     with zipfile.ZipFile(str(zippath), "w", zipfile.ZIP_DEFLATED) as zf:
         for p in generated_paths:
             zf.write(p, arcname=p.name)

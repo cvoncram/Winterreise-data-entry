@@ -7,11 +7,11 @@ from backend.dependencies import ensure_extension, store_file, TOKENS, sanitize_
 from backend.services.sv_parser import parse_sv_bytes
 from backend.services.sv_mapper import generate_mei_from_sv
 from backend.services.mei_preview import generate_layer_previews
+from backend.config import SV_TO_MEI_DIR
 
 router = APIRouter(prefix="/sv-to-mei", tags=["sv-to-mei"])
 
-OUTPUT_DIR = os.path.join("backend", "tmp", "sv_to_mei")
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+OUTPUT_DIR = SV_TO_MEI_DIR
 
 @router.get("/")
 async def form(request: Request):

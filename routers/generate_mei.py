@@ -4,11 +4,11 @@ from fastapi import APIRouter, Request, Form
 from fastapi.responses import FileResponse
 from backend.dependencies import templates, sanitize_filename
 from backend.services.generate_mei_service import generate_mei_package
+from backend.config import TEMP_MEI_DIR, MEI_TEMPLATES_DIR
 
 router = APIRouter(prefix="/generate-mei", tags=["generate-mei"])
 
-TEMP = "temp_generated_mei"
-os.makedirs(TEMP, exist_ok=True)
+TEMP = TEMP_MEI_DIR
 
 BASE_DIR = Path(__file__).resolve().parents[2]   # backend folder
 
@@ -51,8 +51,8 @@ def process(
         gnd_uid=gnd_uid,
         context=context,
         label_addition=label_addition,
-        templates_dir="backend/resources/mei_templates",
-        out_dir=TEMP
+        templates_dir=MEI_TEMPLATES_DIR,
+        out_dir=TEMP_MEI_DIR
     )
 
     token = os.path.basename(zip_path)
