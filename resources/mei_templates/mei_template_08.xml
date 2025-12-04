@@ -373,18 +373,7 @@
     <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
     <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
     <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
-</add></measure>
-                  <scoreDef keysig="1s" />
-                  <measure xml:id="m1ogif5b" metcon="0"><add >
-    <tempo tstamp.ges="1" mm="" type="performed"/>
-    <tempo tstamp.ges="2" mm="" type="performed"/>
-    <tempo tstamp.ges="3" mm="" type="performed"/>
-    <dynam tstamp.ges="1" n="" type="performed"/>
-    <dynam tstamp.ges="2" n="" type="performed"/>
-    <dynam tstamp.ges="3" n="" type="performed"/>
-    <annot tstamp.ges="1" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="2" label="spectral centroid (Hz)" n="" type="performed"/>
-    <annot tstamp.ges="3" label="spectral centroid (Hz)" n="" type="performed"/>
+    <scoreDef keysig="1s" />
 </add></measure>
                   <measure xml:id="myirm3e" n="28"><add >
     <tempo tstamp.ges="1" mm="" type="performed"/>
