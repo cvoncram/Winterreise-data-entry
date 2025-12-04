@@ -4,4 +4,4 @@ __pycache__/
 routers/__pycache__/
 services/__pycache__/
 *.pyc
-tmp/
+data/
