@@ -73,6 +73,34 @@ deactivate
 
 ```
 
+#### Docker (Linux/macOS)
+
+```bash
+
+# Create a new folder for the app and move into it
+mkdir Winterreise_app
+cd Winterreise_app
+
+# Clone the backend repository
+git clone git@github.com:cvoncram/Winterreise-data-entry-backend.git
+
+# Rename folder to ensure references remain valid
+mv Winterreise-data-entry-backend backend
+
+cd backend
+
+# Build the Docker image
+docker build -t backend .
+
+# Run the Docker container
+docker run -d   -p 8000:8000   --name backend-app   backend
+# You can now access the application in your browser under http://localhost:8080
+
+# Stop the Docker container 
+docker stop backend
+
+```
+
 ---
 
 ## Used frameworks, libraries, and packages
