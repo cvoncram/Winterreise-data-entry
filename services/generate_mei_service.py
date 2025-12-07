@@ -189,7 +189,7 @@ def generate_mei_package(
         generated_paths.append(outpath)
 
     # Create ZIP
-    zipname = f"{year}_{_sanitize_filename_part(safe_last)}_{_sanitize_filename_part(safe_label_addition)}.zip" if label_addition else f"{year}_{_sanitize_filename_part(safe_last)}l"
+    zipname = f"{year}_{_sanitize_filename_part(safe_last)}_{_sanitize_filename_part(safe_label_addition)}.zip" if label_addition else f"{year}_{_sanitize_filename_part(safe_last)}.zip"
     zippath = TEMP_MEI_DIR / zipname
     with zipfile.ZipFile(str(zippath), "w", zipfile.ZIP_DEFLATED) as zf:
         for p in generated_paths:
