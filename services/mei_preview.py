@@ -2,7 +2,7 @@ from copy import deepcopy
 from typing import Dict, Optional, Tuple
 from lxml import etree
 
-from backend.services.sv_parser import find_datasets
+from services.sv_parser import find_datasets
 
 def extract_preview_measures(mei_bytes: bytes, first: int = 5, last: int = 5):
     parser = etree.XMLParser(remove_blank_text=True)

@@ -3,7 +3,7 @@ import uuid
 from pathlib import Path
 from datetime import datetime
 from lxml import etree
-from backend.config import TEMP_MEI_DIR
+from config import TEMP_MEI_DIR
 
 NS = {"mei": "http://www.music-encoding.org/ns/mei"}
 

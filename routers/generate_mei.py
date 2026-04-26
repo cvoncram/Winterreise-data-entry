@@ -2,9 +2,9 @@ import os
 from pathlib import Path
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import FileResponse
-from backend.dependencies import templates, sanitize_filename
-from backend.services.generate_mei_service import generate_mei_package
-from backend.config import TEMP_MEI_DIR, MEI_TEMPLATES_DIR
+from dependencies import templates, sanitize_filename
+from services.generate_mei_service import generate_mei_package
+from config import TEMP_MEI_DIR, MEI_TEMPLATES_DIR
 
 router = APIRouter(prefix="/generate-mei", tags=["generate-mei"])
 

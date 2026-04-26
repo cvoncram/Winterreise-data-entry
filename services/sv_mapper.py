@@ -1,7 +1,7 @@
 from lxml import etree
 from typing import List, Tuple, Optional
 import numpy as np
-from backend.services.sv_parser import find_datasets, extract_points
+from services.sv_parser import find_datasets, extract_points
 from copy import deepcopy
 
 def generate_mei_from_sv(

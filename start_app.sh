@@ -3,11 +3,8 @@
 # Exit immediately if a command fails
 set -e
 
-# Move to the project root 
-cd "$(dirname "$0")/.." || exit 1
-
 # Activate the virtual environment
-source .venv/bin/activate
+source venv/bin/activate
 
 # Define host and port
 HOST="127.0.0.1"
@@ -15,7 +12,7 @@ PORT="8000"
 URL="http://$HOST:$PORT"
 
 # Start FastAPI app in the background
-uvicorn backend.main:app --host $HOST --port $PORT --reload &
+uvicorn main:app --host $HOST --port $PORT --reload &
 
 # Give server a moment to start
 sleep 2

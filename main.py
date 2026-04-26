@@ -4,8 +4,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from backend.config import TEMPLATES_DIR, STATIC_DIR, DATA_DIR
-from backend.routers import generate_mei, home, sv_to_mei
+from config import TEMPLATES_DIR, STATIC_DIR, DATA_DIR
+from routers import generate_mei, home, sv_to_mei
 
 
 # --- Lifespan handler ---

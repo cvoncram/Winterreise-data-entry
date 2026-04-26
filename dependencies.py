@@ -4,7 +4,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi import HTTPException, UploadFile
 import time
 import re
-from backend.config import TEMPLATES_DIR
+from config import TEMPLATES_DIR
 
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 

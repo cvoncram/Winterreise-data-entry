@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request
-from backend.dependencies import templates
+from dependencies import templates
 
 router = APIRouter()
 
