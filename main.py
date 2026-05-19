@@ -10,7 +10,7 @@ from routers import generate_mei, home, sv_to_mei
 
 # Lifespan handler
 @asynccontextmanager
-async def lifespan():
+async def lifespan(app: FastAPI):
     if os.path.exists(DATA_DIR):
         shutil.rmtree(DATA_DIR, ignore_errors=True)
     os.makedirs(DATA_DIR, exist_ok=True)
