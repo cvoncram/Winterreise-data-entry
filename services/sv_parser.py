@@ -1,4 +1,3 @@
-# backend/services/sv_parser.py
 from lxml import etree
 from typing import Dict, Any, List, Tuple, Optional
 

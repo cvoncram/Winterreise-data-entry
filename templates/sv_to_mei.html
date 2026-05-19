@@ -73,7 +73,6 @@ in the head matter of the MEI file, making it possible to track how the calculat
     <hr>
 
     {{ file_input("mei_file", "mei_file", "MEI file (.mei/.xml)") }}
-
     {{ text_input("sample_rate", "sample_rate", "Sample rate (usually stays the same)", "44100") }}
     {{ text_input("mf_db", "mf_db", "dB value for calibrating: how loud is mezzoforte?", "-30.0") }}
     {{ text_input("step_db", "step_db", "Dynamic range (i.e., how great is the difference between musical levels in dB?)", "10.0") }}
@@ -81,6 +80,12 @@ in the head matter of the MEI file, making it possible to track how the calculat
         "pickup",
         "The piece contains a pickup measure (<i>Auftakt</i>)" | safe,
         checked=False,
+        value="1"
+    ) }}
+    {{ toggle(
+        "dyn_method",
+        "Calculate dynamics values using the mean of all values in an interval (if unchecked, the tool will extract the value 100ms after a beat marking)" | safe,
+        checked=True,
         value="1"
     ) }}
 

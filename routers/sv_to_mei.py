@@ -40,7 +40,8 @@ async def process(
     sample_rate: Optional[int] = Form(44100),
     mf_db: Optional[float] = Form(-30.0),
     step_db: Optional[float] = Form(10.0),
-    pickup: Optional[str] = Form(None),
+    pickup: Optional[bool] = Form(None),
+    dyn_method: Optional[bool] = Form(None)
 ):
     ensure_extension(sv_file, (".sv",))
     ensure_extension(mei_file, (".mei", ".xml"))
@@ -60,7 +61,8 @@ async def process(
             beat_layer_name=layer_beat,
             spectral_layer_name=layer_spectral,
             power_layer_name=layer_power,
-            pickup=bool(pickup)
+            pickup=pickup,
+            dyn_method=dyn_method
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Processing failed: {e}")
