@@ -22,12 +22,9 @@ After finishing the installation, you will be able to start the application by o
 #### Linux and macOS
 
 ```bash
-# Create a new folder for the app and move into it
-mkdir Winterreise_app
-cd Winterreise_app
-
-# Clone the repository
+# Clone the repository and move to the folder
 git clone git@github.com:cvoncram/Winterreise-data-entry.git
+cd Winterreise-data-entry
 
 # Create a Python virtual environment
 python3 -m venv venv
@@ -40,17 +37,14 @@ pip install -r requirements.txt
 
 # Deactivate the virtual environment
 deactivate
+
 ```
-#### Windows
+#### Windows (untested)
 
 ```powershell
-
-# Create a new folder for the app and move into it
-mkdir Winterreise_app
-Set-Location Winterreise_app
-
-# Clone the backend repository
+# Clone the repository and move there
 git clone git@github.com:cvoncram/Winterreise-data-entry.git
+Set-Location Winterreise_app
 
 # Create a Python virtual environment
 python -m venv venv
@@ -69,14 +63,8 @@ deactivate
 #### Docker (Linux/macOS)
 
 ```bash
-
-# Create a new folder for the app and move into it
-mkdir Winterreise_app
-cd Winterreise_app
-
-# Clone the backend repository
+# Clone the repository and move there
 git clone git@github.com:cvoncram/Winterreise-data-entry.git
-
 cd Winterreise-data-entry
 
 # Build the Docker image
