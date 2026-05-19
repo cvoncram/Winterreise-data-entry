@@ -50,7 +50,6 @@ async def process(
     mei_bytes = await mei_file.read()
 
     try:
-        # Generate MEI from SV
         sv_tree = parse_sv_bytes(sv_bytes)
         modified_mei_bytes, preview_measures, warnings = generate_mei_from_sv(
             sv_tree=sv_tree,
@@ -67,9 +66,7 @@ async def process(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Processing failed: {e}")
 
-    # -------------------------------
-    # Insert <application> metadata
-    # -------------------------------
+
     from lxml import etree
     from datetime import datetime
 
@@ -127,9 +124,6 @@ async def process(
         xml_declaration=True
     )
 
-    # -------------------------------
-    # Save file & update TOKENS (unchanged)
-    # -------------------------------
     token = sanitize_filename(str(int(time.time())), default=str(int(time.time())))
     out_path = store_file(OUTPUT_DIR, f"_{token}.mei")
 
@@ -158,7 +152,6 @@ async def preview(token: str = Form(...)):
         "measures": preview_measures,
         "warnings": info.get("warnings", [])
     })
-
 
 @router.get("/download/{token}")
 async def download(token: str):

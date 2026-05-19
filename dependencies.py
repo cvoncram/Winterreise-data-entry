@@ -9,7 +9,6 @@ from config import TEMPLATES_DIR
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
 def ensure_extension(file: UploadFile, allowed: tuple[str, ...]):
-    # Normalize the allowed tuple to avoid accidental string usage
     if not isinstance(allowed, tuple):
         allowed = tuple(allowed)
     if not file.filename.lower().endswith(allowed):
@@ -20,7 +19,7 @@ def ensure_extension(file: UploadFile, allowed: tuple[str, ...]):
     return file
 
 TOKENS = {}
-TOKEN_TTL = 3600  # 1 hour
+TOKEN_TTL = 3600
 
 def cleanup_tokens():
     now = time.time()

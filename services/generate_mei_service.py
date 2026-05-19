@@ -7,13 +7,10 @@ from config import TEMP_MEI_DIR
 
 NS = {"mei": "http://www.music-encoding.org/ns/mei"}
 
-
 def _sanitize_filename_part(s: str) -> str:
     s = (s or "").strip().replace(" ", "_")
     return "".join(c for c in s if c.isalnum() or c in ("-", "_")) or "unknown"
 
-
-# mapping of user selection -> (type attr, text content)
 CREATION_MAP = {
     "Recital": ("Live - Recital", "Recital"),
     "Studio": ("Studio - Recording", "Studio Recording"),
@@ -27,7 +24,7 @@ def _make_appinfo_fragment():
     Returns an <appInfo> element containing <application> with metadata.
     """
     M = "{http://www.music-encoding.org/ns/mei}"
-    appinfo = etree.Element(f"{M}appInfo")  # the container
+    appinfo = etree.Element(f"{M}appInfo")
     application = etree.SubElement(appinfo, f"{M}application")
     application.set("{http://www.w3.org/XML/1998/namespace}id", "mei_generator")
     application.set("version", "1.0")
@@ -87,7 +84,6 @@ def generate_mei_package(
         manifestations = root.xpath(".//mei:manifestation", namespaces=NS)
         if manifestations:
             m_el = manifestations[0]
-            # set attributes
             m_el.set("{http://www.w3.org/XML/1998/namespace}id", manifestation_id)
             m_el.set("label", label_base)
             m_el.set("n", str(manifestation_n))
@@ -111,8 +107,7 @@ def generate_mei_package(
                 else:
                     root.append(m_el)
 
-        # inside the manifestation, try to find the bibl/persName role="pianist" and creation
-        # If template already has structure, update pianist and creation nodes; otherwise create minimal bibl block.
+        # inside the manifestation, find the bibl/persName role="pianist" and creation
         bibl = m_el.find(".//{http://www.music-encoding.org/ns/mei}bibl")
         if bibl is None:
             # create editionStmt/edition/bibl
@@ -166,20 +161,15 @@ def generate_mei_package(
         enc_desc = root.xpath(".//mei:meiHead//mei:encodingDesc", namespaces=NS)
         appinfo_fragment = _make_appinfo_fragment()
         if enc_desc:
-            # Check if there is already an <appInfo>
             appinfo_els = enc_desc[0].xpath("./mei:appInfo", namespaces=NS)
             if appinfo_els:
-                # Append <application> inside the first existing <appInfo>
                 existing_appinfo = appinfo_els[0]
-                # Extract the <application> element from appinfo_fragment
                 application_el = appinfo_fragment.find("{http://www.music-encoding.org/ns/mei}application")
                 existing_appinfo.append(application_el)
             else:
-                # No <appInfo>, create one and append the <application>
                 enc_desc_el = enc_desc[0]
                 enc_desc_el.append(appinfo_fragment)
         else:
-            # fallback: append <appInfo> (with <application>) to root
             root.append(appinfo_fragment)
 
         # Write file
@@ -202,8 +192,6 @@ def generate_mei_package(
     meihead_els = first_root.xpath(".//mei:meiHead", namespaces=NS)
     if meihead_els:
         meihead_str = etree.tostring(meihead_els[0], encoding="unicode", pretty_print=True)
-        # remove redundant xmlns on the snippet for cleaner preview (if present)
-        meihead_str = meihead_str.replace(' xmlns="http://www.music-encoding.org/ns/mei"', '')
     else:
         meihead_str = "<!-- meiHead not found in template -->"
 

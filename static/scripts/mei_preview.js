@@ -1,8 +1,6 @@
 // ===============================
 //      MEI Preview Helper
 // ===============================
-
-// Renders MEI preview in boxes (first/last N measures)
 function renderMEIPreview(measures) {
     const container = document.getElementById("mei-preview");
     if (!container) return;
@@ -41,8 +39,6 @@ function renderMEIPreview(measures) {
         return secDiv;
     };
 
-
-    // Split measures in first half / last half
     const first4 = measures.slice(0, 4);
     const last4 = measures.slice(-4);
 

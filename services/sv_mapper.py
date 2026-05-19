@@ -86,12 +86,14 @@ def generate_mei_from_sv(
         if len(beat_points) == 1:
             beat_intervals = [(beat_points[0][0], beat_points[0][0] + 1)]
 
+    # aggregate SC data and calculate average
     def aggregate_spectral_centroid(points, start, end):
         vals = [v for f, v, _ in points if v is not None and start <= f < end]
         if not vals:
             return None
         return float(np.mean(vals))
     
+    # aggregate power data and a) calculate average or b) determine the closest value 100ms after marking    
     def determine_dynamics(points, start, end, use_average):
         vals = [v for f, v, _ in points if v is not None and start <= f < end]
 

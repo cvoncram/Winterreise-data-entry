@@ -8,7 +8,7 @@ def parse_sv_bytes(sv_bytes: bytes):
         if sv_bytes[:3] == b"BZh":
             sv_bytes = bz2.decompress(sv_bytes)
     except Exception:
-        pass  # proceed with original bytes if decompress fails
+        pass
 
     parser = etree.XMLParser(resolve_entities=False, no_network=True)
     root = etree.fromstring(sv_bytes, parser=parser)

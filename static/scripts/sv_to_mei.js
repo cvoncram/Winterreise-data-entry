@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-
     // =========================
     // SV layer preview handler
     // =========================
@@ -61,12 +60,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const previewContainer = document.getElementById("mei-preview");
         const downloadPanel = document.getElementById("download-panel");
 
-        // Clear preview and hide download
         previewContainer.innerHTML = "Processing...";
         downloadPanel.style.display = "none";
 
         try {
-            // Process SV → MEI
             const resp = await fetch("/sv-to-mei/process", {
                 method: "POST",
                 body: formData
@@ -86,7 +83,6 @@ document.addEventListener("DOMContentLoaded", () => {
             // ===========================
             const warningPanel = document.getElementById("warning-panel");
 
-            // Inside your submit handler, after fetching /process
             if (data.warnings && data.warnings.length > 0) {
                 warningPanel.style.display = "block";
                 warningPanel.innerHTML = data.warnings
@@ -97,7 +93,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 warningPanel.innerHTML = "";
             }
 
-            // Fetch MEI preview
             const previewResp = await fetch("/sv-to-mei/preview", {
                 method: "POST",
                 body: new URLSearchParams({token})
@@ -112,14 +107,12 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("DEBUG preview response:", previewData);
 
             if (previewData.measures && previewData.measures.length > 0) {
-                // Use renderMEIPreview to show the measures
                 renderMEIPreview(previewData.measures);
             } else {
                 previewContainer.innerHTML = "<p>No MEI preview available yet. Please process the SV file first.</p>";
                 previewContainer.style.display = "block";
             }
 
-            // Enable download button
             const downloadBtn = document.getElementById("download-btn");
             downloadBtn.onclick = () => {
                 window.location = `/sv-to-mei/download/${token}`;

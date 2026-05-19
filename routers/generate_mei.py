@@ -10,7 +10,7 @@ router = APIRouter(prefix="/generate-mei", tags=["generate-mei"])
 
 TEMP = TEMP_MEI_DIR
 
-BASE_DIR = Path(__file__).resolve().parents[2]   # backend folder
+BASE_DIR = Path(__file__).resolve().parents[2]
 
 @router.get("")
 def page(request: Request):

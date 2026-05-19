@@ -22,8 +22,6 @@
 
     {{ text_input("gnd_uid", "gnd_uid", "Pianist GND UID") }}
     {{ text_input("year", "year", "Year of recording") }}
-
-    <!-- recording context dropdown -->
     {{ custom_dropdown(
         "context",
         "Recording context",
@@ -35,7 +33,6 @@
         ],
         selected=None
     ) }}
-
     {{ text_input("manifestation_id", "manifestation_id", "Manifestation xml:id (for all 24 files)") }}
     {{ text_input("manifestation_n", "manifestation_n", "Number in the list of recordings (@n attribute in manifestation tag)", "1") }}
     {{ text_input("label_addition", "label_addition", "Label extension (optional)", "") }}

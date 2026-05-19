@@ -1,7 +1,3 @@
-// ===============================
-//      Base JS: Shared UI
-// ===============================
-
 // ================================
 // File input name update
 // ================================
@@ -9,7 +5,7 @@ document.addEventListener("change", (event) => {
     if (event.target.matches(".file-input-hidden")) {
         const input = event.target;
         const nameSpan = document.getElementById(input.id + "-name");
-        const wrapper = input.closest(".file-wrapper"); // get the parent div
+        const wrapper = input.closest(".file-wrapper");
 
         if (nameSpan) {
             nameSpan.textContent = input.files[0]?.name || "No file chosen";
@@ -74,12 +70,9 @@ async function applyFormAction(
         const data = await r.json();
 
         if (!data.error) {
-            // Update token input if provided
+
             if (tokenInputId) document.getElementById(tokenInputId).value = data.token;
 
-            // --------------------------
-            // Fetch MEI preview
-            // --------------------------
             if (previewEndpoint && previewContainerId) {
                 const previewForm = new FormData();
                 previewForm.append("token", data.token);
@@ -88,17 +81,14 @@ async function applyFormAction(
                     const previewResp = await fetch(previewEndpoint, { method: "POST", body: previewForm });
                     const previewData = await previewResp.json();
 
-                    // If MEI measures are returned, render preview
                     if (previewData.measures && previewData.measures.length > 0) {
                         renderMEIPreview(previewData.measures);
                     } else {
-                        // fallback if no measures yet
                         const container = document.getElementById(previewContainerId);
                         container.innerHTML = "<p>No MEI preview available yet. Please process the SV file first.</p>";
                         container.style.display = "block";
                     }
 
-                    // Display any warnings
                     if (previewData.warnings && previewData.warnings.length > 0) {
                         const warningsContainer = document.getElementById("warnings");
                         warningsContainer.innerHTML = "<ul>" + previewData.warnings.map(w => `<li>${w}</li>`).join("") + "</ul>";
@@ -109,7 +99,6 @@ async function applyFormAction(
                 }
             }
 
-            // Show download button if requested
             if (downloadPrefix && downloadFilename) {
                 document.getElementById("download-container").innerHTML =
                     `<a href="${downloadPrefix}/${data.token}" download="${downloadFilename}">
