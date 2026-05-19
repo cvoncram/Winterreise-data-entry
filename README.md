@@ -7,7 +7,6 @@ This page and these tools were created by Clemens von Cramon as part of the proj
 
 The process and calculations of mapping dynamic values onto beat markings and creating interpreted dynamics values is inspired by and closely resembles the [Dyn-a-matic tool](https://mazurka.org.uk/software/online/dynamatic/) created by the [Mazurka Project](https://mazurka.org.uk/).
 
-
 ---
 
 ## Installation (Linux/macOS)
@@ -27,20 +26,17 @@ After finishing the installation, you will be able to start the application by o
 mkdir Winterreise_app
 cd Winterreise_app
 
-# Clone the backend repository
-git clone git@github.com:cvoncram/Winterreise-data-entry-backend.git
-
-# Rename folder to ensure references remain valid
-mv Winterreise-data-entry-backend backend
+# Clone the repository
+git clone git@github.com:cvoncram/Winterreise-data-entry.git
 
 # Create a Python virtual environment
-python3 -m venv .venv
+python3 -m venv venv
 
 # Activate the virtual environment
-source .venv/bin/activate
+source venv/bin/activate
 
 # Install Python requirements
-pip install -r backend/requirements.txt
+pip install -r requirements.txt
 
 # Deactivate the virtual environment
 deactivate
@@ -54,19 +50,16 @@ mkdir Winterreise_app
 Set-Location Winterreise_app
 
 # Clone the backend repository
-git clone git@github.com:cvoncram/Winterreise-data-entry-backend.git
-
-# Rename folder to ensure references remain valid
-Rename-Item -Path "Winterreise-data-entry-backend" -NewName "backend"
+git clone git@github.com:cvoncram/Winterreise-data-entry.git
 
 # Create a Python virtual environment
-python -m venv .venv
+python -m venv venv
 
 # Activate the virtual environment
-.venv\Scripts\Activate.ps1
+venv\Scripts\Activate.ps1
 
 # Install Python requirements
-pip install -r backend/requirements.txt
+pip install -r requirements.txt
 
 # Deactivate the virtual environment
 deactivate
@@ -82,22 +75,19 @@ mkdir Winterreise_app
 cd Winterreise_app
 
 # Clone the backend repository
-git clone git@github.com:cvoncram/Winterreise-data-entry-backend.git
+git clone git@github.com:cvoncram/Winterreise-data-entry.git
 
-# Rename folder to ensure references remain valid
-mv Winterreise-data-entry-backend backend
-
-cd backend
+cd Winterreise-data-entry
 
 # Build the Docker image
-docker build -t backend .
+docker build -t data-entry .
 
 # Run the Docker container
-docker run -d   -p 8000:8000   --name backend-app   backend
+docker run -d   -p 8000:8000   --name data-entry-app   data-entry
 # You can now access the application in your browser under http://localhost:8080
 
 # Stop the Docker container 
-docker stop backend
+docker stop data-entry
 
 ```
 
