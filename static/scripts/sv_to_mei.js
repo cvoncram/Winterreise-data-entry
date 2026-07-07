@@ -125,4 +125,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    const pickup = document.getElementById("pickup");
+    const container = document.getElementById("skip-m0-container");
+
+    function updateVisibility() {
+        container.style.display = pickup.checked ? "" : "none";
+    }
+
+    pickup.addEventListener("change", updateVisibility);
+
+    updateVisibility();
+
 });

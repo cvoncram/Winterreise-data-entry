@@ -81,6 +81,14 @@ in the head matter of the MEI file, making it possible to track how the calculat
         checked=False,
         value="1"
     ) }}
+    <div id="skip-m0-container">
+        {{ toggle(
+            "skip_m_0",
+            "If there is a pickup measure: Skip the first measure (n=0) altogether" | safe,
+            checked=True,
+            value="1"
+        ) }}
+    </div>
     {{ toggle(
         "dyn_method",
         "Calculate dynamics values using the mean of all values in an interval (if unchecked, the tool will extract the value 100ms after a beat marking)" | safe,

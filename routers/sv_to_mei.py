@@ -8,6 +8,8 @@ from services.sv_parser import parse_sv_bytes
 from services.sv_mapper import generate_mei_from_sv
 from services.mei_preview import generate_layer_previews
 from config import SV_TO_MEI_DIR
+from lxml import etree
+from datetime import datetime
 
 router = APIRouter(prefix="/sv-to-mei", tags=["sv-to-mei"])
 
@@ -41,6 +43,7 @@ async def process(
     mf_db: Optional[float] = Form(-30.0),
     step_db: Optional[float] = Form(10.0),
     pickup: Optional[bool] = Form(None),
+    skip_m_0: Optional[bool] = Form(None),
     dyn_method: Optional[bool] = Form(None)
 ):
     ensure_extension(sv_file, (".sv",))
@@ -61,14 +64,11 @@ async def process(
             spectral_layer_name=layer_spectral,
             power_layer_name=layer_power,
             pickup=pickup,
+            skip_m_0=skip_m_0,
             dyn_method=dyn_method
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Processing failed: {e}")
-
-
-    from lxml import etree
-    from datetime import datetime
 
     XML_NS = "http://www.w3.org/XML/1998/namespace"
 

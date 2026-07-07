@@ -14,6 +14,7 @@ def generate_mei_from_sv(
     spectral_layer_name: Optional[str] = None,
     power_layer_name: Optional[str] = None,
     pickup: bool = False,
+    skip_m_0: bool = False,
     dyn_method: bool = True
     
 ) -> Tuple[bytes, List[str], List[str]]:
@@ -148,17 +149,19 @@ def generate_mei_from_sv(
 
     total_intervals = len(beat_intervals)
     interval_start_idx = 0
+
     if pickup:
         if total_intervals < 1:
             raise ValueError("Not enough intervals for pickup handling.")
-        timeline.append({
-            "interval_idx": 0,
-            "measure_idx": 0,
-            "tstamp": beat_tstamps[-1]
-        })
-        interval_start_idx = 1
 
-    # remaining intervals are assigned to normal measures starting at measure index (0 or 1)
+        if not skip_m_0:
+            timeline.append({
+                "interval_idx": 0,
+                "measure_idx": 0,
+                "tstamp": beat_tstamps[-1]
+            })
+            interval_start_idx = 1      # consume interval 0 only in case C
+
     normal_measure_offset = 1 if pickup else 0
     remaining_intervals = total_intervals - interval_start_idx
 
@@ -196,7 +199,7 @@ def generate_mei_from_sv(
             add_el = etree.SubElement(measure_el, f"{{{ns['mei']}}}add")
 
         # If this entry is the pickup (measure 0 when pickup=True), populate therein only the last beat's spectral + dynamics; tempos should stay empty string
-        if pickup and measure_idx == 0:
+        if pickup and not skip_m_0 and measure_idx == 0:
             # Spectral
             val = aggregate_spectral_centroid(spectral_points, start, end) if spectral_points else None
             annot_el = get_or_create_measure_child(add_el, "annot", tstamp_str)
